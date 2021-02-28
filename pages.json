@@ -1,0 +1,97 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle":"custom",// 去掉微信小程序顶部导航
+				"app-plus":{
+					"titleNView":false //去掉app+h5顶部导航
+				}
+			}
+		},
+		{
+			"path": "components/login/loginMain/loginMain",
+			"style": {
+				"navigationStyle":"custom",// 去掉微信小程序顶部导航
+				"app-plus":{
+					"titleNView":false //去掉app+h5顶部导航
+				}
+			}
+		},
+		{
+			"path": "components/login/loginPhone/loginPhone",
+			"style": {
+				"navigationBarTitleText": "手机号登录",
+				"navigationBarBackgroundColor":"#fff"
+			}
+		},
+		{
+			"path" : "components/login/loginPhone/loginForgetPwd",
+			"style": {
+				"navigationBarTitleText": "忘记密码",
+				"navigationBarBackgroundColor":"#fff"
+			}
+		},
+		{
+		    "path" : "components/findComponents/redIcon/everdaySong/everdaySong",
+		    "style" :{
+		        "navigationBarTitleText": "每日推荐",
+		        "navigationBarBackgroundColor":"#fff"
+		    }
+		    
+		},
+		{
+		    "path" : "components/music/music",
+		    "style": {
+		    	"navigationStyle":"custom",// 去掉微信小程序顶部导航
+		    	"app-plus":{
+		    		"titleNView":false //去掉app+h5顶部导航
+		    	}
+		    }
+		},
+        {
+            "path" : "components/music/playList/playList",
+            "style": {
+            	"navigationBarTitleText": "歌单",
+            	"navigationBarBackgroundColor":"#fff"
+            }
+        },
+		{
+            "path" : "components/music/playList/playListInfo/playListInfo",
+            "style": {
+            	"navigationStyle":"custom",// 去掉微信小程序顶部导航
+            	"app-plus":{
+            		"titleNView":false //去掉app+h5顶部导航
+            	}
+            }
+        },
+		{
+            "path" : "components/search/search",
+            "style" :{
+                "navigationBarTitleText": "搜索音乐",
+                "navigationBarBackgroundColor":"#fff"
+            }
+        },
+		{
+		    "path" : "components/search/searchDetail",
+		    "style" :{
+		        "navigationBarTitleText": "搜索结果",
+		        "navigationBarBackgroundColor":"#fff"
+		    }
+		},
+		{
+            "path" : "components/login/loginMain/agreement/agreement",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor":"#fff"
+            }
+        }
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#007AFF",
+		"backgroundColor": "#FFFFFF"
+	}
+}
