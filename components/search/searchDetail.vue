@@ -37,7 +37,15 @@
 						title:'歌单',
 					},
 				],
+				keyWords:'',
 			}
+		},
+		onLoad(option) {
+			this.keyWords = option.keyWords
+			uni.setNavigationBarTitle({
+				title: option.keyWords + ' 的搜索结果'
+			});
+			// this.getSearchResult()
 		},
 		methods:{
 			clickTab(current){

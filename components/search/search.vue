@@ -18,7 +18,7 @@
 					<view class="searchItem"
 						  v-for="item in searchList" 
 						  :key="item.id" 
-						  @click="toSearchDetail(item.id)">
+						  @click="toSearchDetail(item.name)">
 						<text class="iconfont icon-search"/>
 						<text class="content">{{item.name}}</text>
 					</view>
@@ -28,7 +28,7 @@
 		<block v-else>
 			<view class="history" v-if="historyList.length">
 				<view class="title">
-					<text style="font-size: 30rpx;font-weight: 600;margin-right: 520rpx;">历史记录</text>
+					<text style="font-size: 30rpx;font-weight: 600;margin-right: 490rpx;">历史记录</text>
 					<text class="iconfont icon-lajixiang" style="font-size: 40rpx;" @click="deleteHistory"/>
 				</view>
 				<view class="historyList">
@@ -40,7 +40,7 @@
 				<view class="hotList"
 					  v-for="(item,index) in hostList" 
 					  :key="index" 
-					  @click="toSearchDetail(index)">
+					  @click="toSearchDetail(item.searchWord)">
 					<text class="order" :style="{'color': index < 3 ? 'rgb(240, 19, 19)' : ''}">{{index + 1}}</text>
 					<view style="width: 500rpx;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
 						<view>
@@ -110,15 +110,17 @@
 			},
 			handleInputChange(e){
 				this.searchContent = e.detail.value.trim()
-				if(isSend){
-					return 
+				if(this.searchContent){
+					if(isSend){
+						return 
+					}
+					isSend = true
+					this.getSearchList()
+					//函数节流
+					setTimeout(() => {
+						isSend = false;
+					},300)
 				}
-				isSend = true
-				this.getSearchList()
-				//函数节流
-				setTimeout(() => {
-					isSend = false;
-				},300)
 			},
 			async getSearchList(){
 				if(!this.searchContent){
@@ -141,8 +143,10 @@
 					this.historyList = historyList
 				}
 			},
-			toSearchDetail(index){
-				
+			toSearchDetail(songName){
+				uni.navigateTo({
+					url:'./searchDetail?keyWords=' + songName
+				})
 			}
 		}
 	}
