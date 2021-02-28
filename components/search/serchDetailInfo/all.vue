@@ -1,5 +1,5 @@
 <template>
-	<view class="all">
+	<scroll-view class="all" scroll-y>
 		<view class="song">
 			<view class="title" style="border-bottom: 1rpx solid #D9D9D9;">
 				<text style="font-size: 37rpx;">单曲</text>
@@ -35,11 +35,11 @@
 				</view>
 			</view>
 			<view class="more">
-				<text>查看全部128首单曲</text>
+				<text>查看全部{{all[1].songCount}}首单曲</text>
 				<text class="iconfont icon-xiayige"/>
 			</view>
 		</view>
-	</view>
+	</scroll-view>
 </template>
 
 <script>
