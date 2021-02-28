@@ -35,7 +35,7 @@
 				</view>
 			</view>
 			<view class="more">
-				<text>查看全部{{all[1].songCount}}首单曲</text>
+				<text>查看全部{{all[1].playlistCount}}首单曲</text>
 				<text class="iconfont icon-xiayige"/>
 			</view>
 		</view>
