@@ -9,8 +9,8 @@
 				</view>
 			</view>
 			<view class="songItem"
-				  v-if="all[0] || all[0].songs || all[0].songCount"
-				  v-for="item in all[0].songs">
+				  v-for="item in songList"
+				  @click="toMusic(item.id)">
 				<view class="content">
 					<text style="font-weight: 600;">{{item.name}}</text>
 					<text style="font-size: 28rpx;color: #4c4c4c;">{{item.ar[0].name}} - {{item.name}}</text>
@@ -18,24 +18,25 @@
 				<view class="iconfont icon-ziyuan"/>
 			</view>
 			<view class="more">
-				<text>查看全部{{all[0].songCount}}首单曲</text>
+				<text>查看全部{{songCount}}首单曲</text>
 				<text class="iconfont icon-xiayige"/>
 			</view>
 		</view>
 		<view class="playList">
 			<view class="title" style="font-size: 37rpx;">歌单</view>
 			<view class="playListItem"
-				  v-for="item in all[1].playlists"
-				  style="height: 150rpx;">
+				  v-for="item in playList"
+				  style="height: 150rpx;"
+				  @click="toPlayList(item.id)">
 				<image :src="item.coverImgUrl" style="width: 140rpx;height: 140rpx;border-radius: 20rpx;margin-right: 10rpx;"/>
 				<view class="content">
 					<text style="font-weight: 600;font-size: 36rpx;">{{item.name}}</text>
-					<text>{{item.trackCount}}首,by{{item.creator.nickname}},播放{{item.playCount}}万次</text>
+					<text>{{item.trackCount}}首,by{{item.creator.nickname}},播放{{item.playCount}}次</text>
 					<text v-if="item.name != '1'">包含《1》</text>
 				</view>
 			</view>
 			<view class="more">
-				<text>查看全部{{all[1].playlistCount}}首单曲</text>
+				<text>查看全部{{playlistCount}}首单曲</text>
 				<text class="iconfont icon-xiayige"/>
 			</view>
 		</view>
@@ -43,18 +44,43 @@
 </template>
 
 <script>
+	import request from 'utils/request.js'
+	
 	export default {
 		data() {
 			return {
+				songList:[],
+				songCount:0,
+				playList:[],
+				playlistCount:0,
 			}
 		},
 		props:{
-			all: Array
+			all: String
 		},
 		mounted() {
+			this.getSearchResult(this.all)
 		},
 		methods: {
-			
+			async getSearchResult(keywords){
+				let songListDate = await request('/cloudsearch',{keywords, limit:5})
+				this.songList = songListDate.result.songs
+				this.songCount = songListDate.result.songCount
+				//
+				let playListDate = await request('/cloudsearch',{keywords, limit:5, type:1000})
+				this.playList = playListDate.result.playLists
+				this.playlistCount = playListDate.result.playlistCount
+			},
+			toMusic(songId){
+				uni.navigateTo({
+					url:'/components/music/music?musicId=' + songId
+				})
+			},
+			toPlayList(playListId){
+				uni.navigateTo({
+					url:'/components/music/playList/playList?playListId=' + playListId
+				})
+			},
 		}
 	}
 </script>

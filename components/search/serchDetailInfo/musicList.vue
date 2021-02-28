@@ -1,27 +1,72 @@
 <template>
-	<view>
-		<image :src="src" style="height: 100rpx;width: 100rpx;border-radius: 5px;"/>
-		<view class="songListItemInfo">
-			<text style="font-weight: 700;">nihao</text>
-			<text style="font-size: 26rpx;">xxx</text>
+	<scroll-view scroll-y class="musicList">
+		<view class="playListItem"
+			  v-for="item in playlist"
+			  style="height: 150rpx;"
+			  @click="toPlayList(item.id)">
+			<image :src="item.coverImgUrl" style="width: 140rpx;height: 140rpx;border-radius: 20rpx;margin-right: 10rpx;"/>
+			<view class="content">
+				<text style="font-weight: 600;font-size: 36rpx;">{{item.name}}</text>
+				<text>{{item.trackCount}}首,by{{item.creator.nickname}},播放{{item.playCount}}次</text>
+			</view>
 		</view>
-		<text class="iconfont icon-ziyuan"/> 
-	</view>
+	</scroll-view>
 </template>
 
 <script>
+	import request from 'utils/request.js'
+	
 	export default {
 		data() {
 			return {
-				
+				playlist:[]
 			}
 		},
+		props:{
+			musicList: String
+		},
+		mounted() {
+			this.getplaylist(this.musicList)
+		},
 		methods: {
-			
+			async getplaylist(keywords){
+				let playlistDate = await request('/cloudsearch',{keywords, limit:100, type:1000})
+				this.playlist = playlistDate.result.playlists
+			},
+			toPlayList(playListId){
+				uni.navigateTo({
+					url:'/components/music/playList/playList?playListId=' + playListId
+				})
+			},
 		}
 	}
 </script>
 
 <style>
-
+	.musicList{
+		padding: 20rpx;
+	}
+	.playListItem{
+		border-radius: 20rpx;
+		height: 100rpx;
+		padding: 20rpx;
+		background: #fff;
+		display: flex;
+		align-items: center;
+	}
+	.playListItem .content{
+		font-size: 28rpx;
+		display: flex;
+		flex-direction: column;
+	}
+	.playListItem .content text{
+		max-width: 500rpx;
+		white-space: normal;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	
+	uni-scroll-view{
+		width: 95%;
+	}
 </style>

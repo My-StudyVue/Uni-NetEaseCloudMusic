@@ -8,7 +8,7 @@
 			<swiper-item v-for="item in chart" :key="item.id">
 				<view :class="item.background" style="color: #FFFFFF;border-radius: 10px;padding: 15px 0 10px 10px;">
 					<view style="padding-bottom: 5px;font-weight: 600;">{{item.name}} ></view>
-					<view v-for="(title,index) in item.tracks" :key="title.id" class="chart_swiperItem_card" @click="toMusic(title.id, index)">
+					<view v-for="(title,index) in item.tracks" :key="title.id" class="chart_swiperItem_card" @click="toMusic(title.id)">
 						<image :src="title.al.picUrl" style="height: 40px;width: 45px;border-radius: 5px;"/>
 						<view>
 							<view style="font-size: 15px; font-weight: 600;width: 180px;padding-left: 5px;">{{index + 1}} {{title.al.name}}</view>
@@ -27,8 +27,7 @@
 			chart: Array
 		},
 		methods:{
-			toMusic(songId,index){
-				this.index = index
+			toMusic(songId){
 				uni.navigateTo({
 					url:'/components/music/music?musicId=' + songId
 				})

@@ -6,7 +6,7 @@
 			</view>
 		</view>
 		<view class="content" v-show="tab === 0">
-			<all :all="ALLTypeList"></all>
+			<all :all="keyWords"></all>
 		</view>
 		<view class="content" v-show="tab === 1">
 			<ballad :ballad="keyWords"></ballad>
@@ -21,8 +21,6 @@
 	import all from './serchDetailInfo/all.vue'
 	import ballad from './serchDetailInfo/ballad.vue'
 	import musicList from './serchDetailInfo/musicList.vue'
-	
-	import request from 'utils/request.js'
 	
 	export default {
 		data(){
@@ -48,18 +46,11 @@
 			uni.setNavigationBarTitle({
 				title: option.keyWords + ' 的搜索结果'
 			});
-			this.getSearchResult(option.keyWords)
 		},
 		methods:{
 			clickTab(current){
 				this.tab = current
 			},
-			getSearchResult(keywords){
-				[1,1000].map(async item => {
-					let typeItem = await request('/cloudsearch',{keywords, limit:5, type:item})
-					this.ALLTypeList.push(typeItem.result)
-				})
-			}
 		},
 		components:{
 			all,
