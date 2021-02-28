@@ -32,7 +32,10 @@
 					<text class="iconfont icon-lajixiang" style="font-size: 40rpx;" @click="deleteHistory"/>
 				</view>
 				<view class="historyList">
-					<view class="historyItem" v-for="(item, index) in historyList" :key="index">{{item}}</view>
+					<view class="historyItem" 
+						  v-for="(item, index) in historyList" 
+						  :key="index"
+						  @click="toSearchDetail(item)">{{item}}</view>
 				</view>
 			</view>
 			<view class="container">
