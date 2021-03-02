@@ -71,6 +71,9 @@
 </script>
 
 <style>
+	uni-page-body, body{
+		height: 100%;
+	}
 	.container{
 		position: relative;
 		background: #fff;

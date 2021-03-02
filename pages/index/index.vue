@@ -40,10 +40,8 @@ import request from 'utils/request.js'
 						title:'发现',
 					}
 				],
-				
 				bannerList:[],//轮播图
 				recommendList:[],//推荐歌单
-				chartListId:[],//排行榜id
 				chartList:[],//排行榜
 			}
 		},
@@ -67,10 +65,10 @@ import request from 'utils/request.js'
 				chartListIdData = chartListIdData.list.sort(() => {
 				        return 0.5 - Math.random();
 				}).slice(0,5);
-				chartListIdData.map(item => {
-					this.chartListId.push(item.id)
+				let chartListId = chartListIdData.map(item => {
+					return item.id
 				})
-				this.chartListId.map(item => this.handlechartList(item))
+				chartListId.map(item => this.handlechartList(item))
 			},
 			async handlechartList(item){
 				let chartListData = await request('/playlist/detail', {id: item});
@@ -80,9 +78,9 @@ import request from 'utils/request.js'
 				})
 				let arr = this.chartList
 				this.chartList = []
-				arr.map(item => {
+				this.chartList = arr.map(item => {
 					item.tracks = [...new Set(item.tracks)].slice(0,3)
-					this.chartList.push(item)
+					return item
 				})
 			},
 		    clickCtTab(ctCur){
@@ -105,16 +103,12 @@ import request from 'utils/request.js'
 						title:'提示',
 						content:'确定清除缓存吗?',
 						success(res) {
-							// 用户确定要删除
 							if(res.confirm){
 								//使用plus.cache.clear 清除应用中的缓存数据 这里清除后还要二十几KB没有清除，达不到全部清除
 								plus.cache.clear( function () {
 									uni.showToast({
 										title:'清除成功',
 										icon:'none',
-										success() {
-										    //成功后处理
-										}
 									})
 								});	
 							}

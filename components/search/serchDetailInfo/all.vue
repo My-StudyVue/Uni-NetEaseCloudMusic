@@ -86,6 +86,9 @@
 </script>
 
 <style>
+	uni-page-body, body{
+		height: 100%;
+	}
 	.all{
 		height: 100%;
 		padding-top: 30rpx;

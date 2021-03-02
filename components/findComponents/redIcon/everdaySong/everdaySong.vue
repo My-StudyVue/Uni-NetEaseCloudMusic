@@ -114,9 +114,9 @@
 					msg:allSongs
 				})
 			},
-			// more(){
-			// 	this.isShow = !this.isShow
-			// },
+			more(){
+				this.isShow = !this.isShow
+			},
 			toMusic(songId,index){
 				this.index = index
 				if(!this.isShow){
