@@ -4207,85 +4207,81 @@ var render = function() {
         "v-uni-view",
         { staticClass: _vm._$g(0, "sc"), attrs: { _i: 0 } },
         [
-          _vm._$g(1, "i")
-            ? _c(
+          _c(
+            "v-uni-view",
+            { staticClass: _vm._$g(1, "sc"), attrs: { _i: 1 } },
+            [
+              _c("v-uni-text", {
+                staticClass: _vm._$g(2, "sc"),
+                staticStyle: { position: "absolute", left: "0" },
+                attrs: { _i: 2 },
+                on: {
+                  click: function($event) {
+                    return _vm.$handleViewEvent($event)
+                  }
+                }
+              }),
+              _c(
                 "v-uni-view",
-                { staticClass: _vm._$g(1, "sc"), attrs: { _i: 1 } },
+                { staticClass: _vm._$g(3, "sc"), attrs: { _i: 3 } },
                 [
-                  _c("v-uni-text", {
-                    staticClass: _vm._$g(2, "sc"),
-                    staticStyle: { position: "absolute", left: "0" },
-                    attrs: { _i: 2 },
-                    on: {
-                      click: function($event) {
-                        return _vm.$handleViewEvent($event)
-                      }
-                    }
-                  }),
                   _c(
                     "v-uni-view",
-                    { staticClass: _vm._$g(3, "sc"), attrs: { _i: 3 } },
+                    { staticClass: _vm._$g(4, "sc"), attrs: { _i: 4 } },
                     [
                       _c(
                         "v-uni-view",
-                        { staticClass: _vm._$g(4, "sc"), attrs: { _i: 4 } },
-                        [
-                          _c(
-                            "v-uni-view",
-                            { class: _vm._$g(5, "c"), attrs: { _i: 5 } },
-                            [_vm._v(_vm._$g(5, "t0-0"))]
-                          )
-                        ],
-                        1
-                      ),
-                      _c("v-uni-view", { attrs: { _i: 6 } }, [
-                        _vm._v(_vm._$g(6, "t0-0") + " >")
-                      ])
+                        { class: _vm._$g(5, "c"), attrs: { _i: 5 } },
+                        [_vm._v(_vm._$g(5, "t0-0"))]
+                      )
                     ],
                     1
                   ),
-                  _c("v-uni-text", {
-                    staticClass: _vm._$g(7, "sc"),
-                    staticStyle: { position: "absolute", right: "0" },
-                    attrs: { _i: 7 }
+                  _c("v-uni-view", { attrs: { _i: 6 } }, [
+                    _vm._v(_vm._$g(6, "t0-0") + " >")
+                  ])
+                ],
+                1
+              ),
+              _c("v-uni-text", {
+                staticClass: _vm._$g(7, "sc"),
+                staticStyle: { position: "absolute", right: "0" },
+                attrs: { _i: 7 }
+              })
+            ],
+            1
+          ),
+          _c(
+            "v-uni-view",
+            { staticClass: _vm._$g(8, "sc"), attrs: { _i: 8 } },
+            [
+              _c("v-uni-image", {
+                staticClass: _vm._$g(9, "sc"),
+                class: _vm._$g(9, "c"),
+                attrs: { src: "/static/images/song/needle.png", _i: 9 }
+              }),
+              _c(
+                "v-uni-view",
+                {
+                  staticClass: _vm._$g(10, "sc"),
+                  class: _vm._$g(10, "c"),
+                  attrs: { _i: 10 }
+                },
+                [
+                  _c("v-uni-image", {
+                    staticClass: _vm._$g(11, "sc"),
+                    attrs: { src: "/static/images/song/disc.png", _i: 11 }
+                  }),
+                  _c("v-uni-image", {
+                    staticClass: _vm._$g(12, "sc"),
+                    attrs: { src: _vm._$g(12, "a-src"), _i: 12 }
                   })
                 ],
                 1
               )
-            : _vm._e(),
-          _vm._$g(8, "i")
-            ? _c(
-                "v-uni-view",
-                { staticClass: _vm._$g(8, "sc"), attrs: { _i: 8 } },
-                [
-                  _c("v-uni-image", {
-                    staticClass: _vm._$g(9, "sc"),
-                    class: _vm._$g(9, "c"),
-                    attrs: { src: "/static/images/song/needle.png", _i: 9 }
-                  }),
-                  _c(
-                    "v-uni-view",
-                    {
-                      staticClass: _vm._$g(10, "sc"),
-                      class: _vm._$g(10, "c"),
-                      attrs: { _i: 10 }
-                    },
-                    [
-                      _c("v-uni-image", {
-                        staticClass: _vm._$g(11, "sc"),
-                        attrs: { src: "/static/images/song/disc.png", _i: 11 }
-                      }),
-                      _c("v-uni-image", {
-                        staticClass: _vm._$g(12, "sc"),
-                        attrs: { src: _vm._$g(12, "a-src"), _i: 12 }
-                      })
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            : _vm._e(),
+            ],
+            1
+          ),
           _c(
             "v-uni-view",
             {
@@ -6679,7 +6675,7 @@ var render = function() {
           _c(
             "v-uni-view",
             {
-              staticStyle: { display: "flex" },
+              staticStyle: { display: "flex", "z-index": "999" },
               attrs: { _i: 5 },
               on: {
                 click: function($event) {
@@ -6692,7 +6688,7 @@ var render = function() {
                 staticClass: _vm._$g(6, "sc"),
                 staticStyle: {
                   "font-size": "40rpx",
-                  "padding-left": "350rpx",
+                  "padding-left": "330rpx",
                   "padding-right": "20rpx"
                 },
                 attrs: { _i: 6 }

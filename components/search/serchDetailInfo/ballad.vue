@@ -6,9 +6,9 @@
 					  style="font-size: 50rpx;padding-right: 20rpx;"/>
 				<view>播放全部</view>
 			</view>
-			<view style="display: flex;" @click="more">
+			<view style="display: flex;z-index: 999;" @click="more">
 				<view class="iconfont icon-duoxuankuang"
-					  style="font-size: 40rpx;padding-left: 350rpx;padding-right: 20rpx;"></view>
+					  style="font-size: 40rpx;padding-left: 330rpx;padding-right: 20rpx;"></view>
 				<view>多选</view>
 			</view>
 		</view>
