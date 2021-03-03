@@ -62,13 +62,15 @@ import request from 'utils/request.js'
 			},
 			async getchartListId(){
 				let chartListIdData = await request('/toplist/detail');
-				chartListIdData = chartListIdData.list.sort(() => {
-				        return 0.5 - Math.random();
-				}).slice(0,5);
-				let chartListId = chartListIdData.map(item => {
-					return item.id
-				})
-				chartListId.map(item => this.handlechartList(item))
+				if(chartListIdData){
+					chartListIdData = chartListIdData.list.sort(() => {
+					        return 0.5 - Math.random();
+					}).slice(0,5);
+					let chartListId = chartListIdData.map(item => {
+						return item.id
+					})
+					chartListId.map(item => this.handlechartList(item))
+				}
 			},
 			async handlechartList(item){
 				let chartListData = await request('/playlist/detail', {id: item});

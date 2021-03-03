@@ -17,8 +17,8 @@
 				</view>
 				<view class="iconfont icon-ziyuan"/>
 			</view>
-			<view class="more">
-				<text>查看全部{{songCount}}首单曲</text>
+			<view class="more" @click="more">
+				<text>查看全部{{songCount > 999 ? '999+' :songCount}}首单曲</text>
 				<text class="iconfont icon-xiayige"/>
 			</view>
 		</view>
@@ -31,11 +31,11 @@
 				<image :src="item.coverImgUrl" style="width: 140rpx;height: 140rpx;border-radius: 20rpx;margin-right: 10rpx;"/>
 				<view class="content">
 					<text style="font-weight: 600;font-size: 36rpx;">{{item.name}}</text>
-					<text>{{item.trackCount}}首,by{{item.creator.nickname}},播放{{item.playCount}}次</text>
+					<text>{{item.trackCount}}首,by{{item.creator.nickname}},播放{{_getNum(item.playCount)}}次</text>
 					<text v-if="item.name != '1'">包含《1》</text>
 				</view>
 			</view>
-			<view class="more">
+			<view class="more" @click="more">
 				<text>查看全部{{playlistCount}}首单曲</text>
 				<text class="iconfont icon-xiayige"/>
 			</view>
@@ -56,10 +56,10 @@
 			}
 		},
 		props:{
-			all: String
+			all: Object
 		},
 		mounted() {
-			this.getSearchResult(this.all)
+			this.getSearchResult(this.all.keyWords)
 		},
 		methods: {
 			async getSearchResult(keywords){
@@ -68,7 +68,7 @@
 				this.songCount = songListDate.result.songCount
 				//
 				let playListDate = await request('/cloudsearch',{keywords, limit:5, type:1000})
-				this.playList = playListDate.result.playLists
+				this.playList = playListDate.result.playlists
 				this.playlistCount = playListDate.result.playlistCount
 			},
 			toMusic(songId){
@@ -80,6 +80,24 @@
 				uni.navigateTo({
 					url:'/components/music/playList/playList?playListId=' + playListId
 				})
+			},
+			_getNum(num){
+				if(num < 100000){
+					return num
+				}else if(num >= 100000 && num < 10000000){
+					return Math.floor(num / 10000) + '万'
+				} else {
+					return (num / 10000000).toFixed(1) + '亿'
+				}
+			},
+			more(e){
+				let tab = this.all.tab
+				if(e.currentTarget.offsetTop <= 500){
+					tab = 1
+				} else {
+					tab = 2
+				}
+				this.$emit("moreClick", tab)
 			},
 		}
 	}
@@ -129,10 +147,10 @@
 	.songItem .content{
 		display: flex;
 		flex-direction: column;
+		white-space: nowrap;
 		width: 600rpx;
-		white-space: normal;
 		overflow: hidden;
-		text-overflow: ellipsis;
+		text-overflow:ellipsis;
 	}
 	.songItem .iconfont{
 		font-size: 45rpx;
@@ -152,10 +170,10 @@
 		flex-direction: column;
 	}
 	.playListItem .content text{
+		font-size: 26rpx;
+		white-space: nowrap; 
 		max-width: 500rpx;
-		white-space: normal;
 		overflow: hidden;
-		text-overflow: ellipsis;
-		background: red;
+		text-overflow:ellipsis;
 	}
 </style>

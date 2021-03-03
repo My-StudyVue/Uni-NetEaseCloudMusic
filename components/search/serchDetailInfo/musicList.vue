@@ -1,5 +1,5 @@
 <template>
-	<scroll-view scroll-y class="musicList">
+	<scroll-view class="musicList" scroll-y>
 		<view class="playListItem"
 			  v-for="item in playlist"
 			  style="height: 150rpx;"
@@ -7,7 +7,7 @@
 			<image :src="item.coverImgUrl" style="width: 140rpx;height: 140rpx;border-radius: 20rpx;margin-right: 10rpx;"/>
 			<view class="content">
 				<text style="font-weight: 600;font-size: 36rpx;">{{item.name}}</text>
-				<text>{{item.trackCount}}首,by{{item.creator.nickname}},播放{{item.playCount}}次</text>
+				<text>{{item.trackCount}}首,by{{item.creator.nickname}},播放{{_getNum(item.playCount)}}次</text>
 			</view>
 		</view>
 	</scroll-view>
@@ -19,7 +19,7 @@
 	export default {
 		data() {
 			return {
-				playlist:[]
+				playlist:[],
 			}
 		},
 		props:{
@@ -38,6 +38,22 @@
 					url:'/components/music/playList/playList?playListId=' + playListId
 				})
 			},
+			_getNum(num){
+				if(num < 100000){
+					return num
+				}else if(num >= 100000 && num < 10000000){
+					return Math.floor(num / 10000) + '万'
+				} else {
+					return (num / 10000000).toFixed(1) + '亿'
+				}
+			},
+			goTop(e){
+				console.log('xxxx',e)
+				uni.showToast({
+				                icon:"none",
+				                title:"纵向滚动 scrollTop 值已被修改为 0"
+				            })
+			}
 		}
 	}
 </script>
@@ -60,10 +76,11 @@
 		flex-direction: column;
 	}
 	.playListItem .content text{
+		font-size: 26rpx;
+		white-space: nowrap;
 		max-width: 500rpx;
-		white-space: normal;
 		overflow: hidden;
-		text-overflow: ellipsis;
+		text-overflow:ellipsis;
 	}
 	
 	uni-scroll-view{

@@ -6,7 +6,7 @@
 			</view>
 		</view>
 		<view class="content" v-show="tab === 0">
-			<all :all="keyWords"></all>
+			<all :all="{keyWords,tab}" @moreClick="clickTab"></all>
 		</view>
 		<view class="content" v-show="tab === 1">
 			<ballad :ballad="keyWords"></ballad>

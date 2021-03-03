@@ -99,12 +99,7 @@
 		methods: {
 			//获取每日推荐的数据
 			async getEverdatList(){
-				let everdayListDate = {
-					data:{
-						dailySongs:{}
-					},
-				}
-				everdayListDate = await request('/recommend/songs');
+				let everdayListDate = await request('/recommend/songs');
 				this.everdayList = everdayListDate.data.dailySongs
 			},
 			playAllSongs(){

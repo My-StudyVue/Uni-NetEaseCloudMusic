@@ -8,7 +8,7 @@
 			</view>
 			<view style="display: flex;z-index: 999;" @click="more">
 				<view class="iconfont icon-duoxuankuang"
-					  style="font-size: 40rpx;padding-left: 330rpx;padding-right: 20rpx;"></view>
+					  style="font-size: 40rpx;padding-left: 320rpx;padding-right: 20rpx;"></view>
 				<view>多选</view>
 			</view>
 		</view>
@@ -76,23 +76,27 @@
 	}
 	.container{
 		position: relative;
-		background: #fff;
 		height: 100%;
-		margin: 0 20rpx;
-		padding-top: 20rpx;
+		margin: 0 10rpx;
 		padding: 20rpx;
-		border-radius: 30rpx;
 	}
 	.container .top{
+		padding: 20rpx 20rpx 0 20rpx;
 		background: #fff;
 		display: flex;
 		align-items: center;
 		height: 80rpx;
+		border-top-left-radius: 30rpx;
+		border-top-right-radius: 30rpx;
 	}
 	
 	.container .bottom{
+		width: 325px;
+		padding: 0 20rpx;
 		background: #fff;
-		height: calc(100vh - 500rpx);
+		border-bottom-left-radius: 30rpx;
+		border-bottom-right-radius: 30rpx;
+		height: calc(100vh - 300rpx);
 	}
 	.container .bottom .item {
 		position: relative;
@@ -108,8 +112,8 @@
 	.container .bottom .item .music text{
 		height: 50rpx;
 		line-height: 50rpx;
+		white-space: nowrap;
 		max-width: 500rpx;
-		white-space: normal;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
