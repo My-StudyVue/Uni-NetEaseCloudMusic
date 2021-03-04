@@ -46,10 +46,10 @@
 </template>
 
 <script>
-	// import musicBottom from 'components/music/musicBottom/musicBottom'
+	// import musicBottom from '/pages/music/musicBottom/musicBottom'
 	
 	import request from 'utils/request.js'
-	
+	const appGlobalData = getApp().globalData;
 	export default {
 		data() {
 			return {
@@ -63,14 +63,16 @@
 		},
 		mounted() {
 			// 判断用户是否登录
-			let userInfo = uni.getStorageSync('userInfo');
-			if(!userInfo){
+			// const userInfo1 = uni.getStorageSync('userInfo1');
+			// const userInfo2 = uni.getStorageSync('userInfo2');
+			// const userInfo3 = uni.getStorageSync('userInfo3');
+			if(!appGlobalData.userInfo1 && !appGlobalData.userInfo2 && !appGlobalData.userInfo3){
 				uni.showToast({
 					title:'请先登录',
 					icon:'none',
 					success:() => {
 						uni.reLaunch({
-							url:'/components/login/loginMain/loginMain'
+							url:'/pages/login/loginMain/loginMain'
 						})
 					}
 				})
@@ -116,7 +118,7 @@
 				this.index = index
 				if(!this.isShow){
 					uni.navigateTo({
-						url:'/components/music/music?musicId=' + songId
+						url:'/pages/music/music?musicId=' + songId
 					})
 				}
 			},

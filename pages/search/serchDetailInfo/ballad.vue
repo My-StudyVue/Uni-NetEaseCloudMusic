@@ -58,7 +58,7 @@
 			toMusic(songId){
 				if(!this.isShow){
 					uni.navigateTo({
-						url:'/components/music/music?musicId=' + songId
+						url:'/pages/music/music?musicId=' + songId
 					})
 				}
 			},

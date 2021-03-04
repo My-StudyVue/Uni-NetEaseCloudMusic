@@ -15,5 +15,5 @@ export default (url, data = {}, method='GET') => {
 				reject(err.data)
 			}
 		})
-	})
+	}).catch(e => {});
 }

@@ -52,6 +52,7 @@
 
 <script>
 	import request from 'utils/request.js'
+	let {phone,password} = uni.getStorageSync('userLogin');
 	export default {
 		data() {
 			return {
@@ -88,15 +89,12 @@
 			}
 		},
 		mounted() {
-			//读取用户基本信息
-			let phone = uni.getStorageSync('userphone');
 			if(phone){
-				// phone.match(/(\d{3})(\d{4})(\d{4})/)
-				// 		 .slice(1)
-				// 		 .reduce((value, item, index) => {
-				// 			return index === 1 ? value + "****" : value + item;
-				// 			});
-				this.userphone = phone
+				this.userphone = phone.match(/(\d{3})(\d{4})(\d{4})/)
+									  .slice(1)
+									  .reduce((value, item, index) => {
+										  return index === 1 ? value + "****" : value + item;
+										  });
 			}
 		},
 		methods: {
@@ -110,8 +108,6 @@
 				}
 			},
 			async login(){
-				let phone = uni.getStorageSync('userphone');
-				let password = uni.getStorageSync('userPassword');
 				let result = await request('/login/cellphone',{phone, password})
 				if(!this.isAgree){
 					this._agreementToast()
@@ -121,6 +117,7 @@
 							url:'/pages/index/index'
 						})
 					},1000)
+					uni.setStorageSync('userInfo2',JSON.stringify(result.profile))
 					uni.showToast({
 						title:'',
 						icon:'loading'
@@ -150,7 +147,7 @@
 				this.loginAgree.map((i) => {
 					if(current === i.id){
 						uni.navigateTo({
-							url:'/components/login/loginMain/agreement/agreement?urlId=' + i.url + '&titleId=' + i.text
+							url:'/pages/login/loginMain/agreement/agreement?urlId=' + i.url + '&titleId=' + i.text
 						})
 					}
 				})

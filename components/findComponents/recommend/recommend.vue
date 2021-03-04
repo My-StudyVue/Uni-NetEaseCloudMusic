@@ -26,13 +26,13 @@
 		methods:{
 			toPlayList(playListId){
 				uni.navigateTo({
-					url:'/components/music/playList/playList?playListId=' + playListId
+					url:'/pages/music/playList/playList?playListId=' + playListId
 				})
 			},
 			toMusicList(){
-				uni.navigateTo({
-					url:'./musicList/musicList'
-				})
+				// uni.navigateTo({
+				// 	url:'./musicList/musicList'
+				// })
 			},
 			_getNum(num){
 				if(num < 100000){

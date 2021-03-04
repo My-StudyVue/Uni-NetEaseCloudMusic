@@ -7,7 +7,7 @@
 				borderRadius: '25rpx',}">
 			<view class="my_title">
 				<image
-					:src="userInfo.avatarUrl ? userInfo.avatarUrl : src" 
+					:src="userInfo.avatarUrl ? userInfo.avatarUrl : '/static/images/user/user.png'" 
 					style="width: 100rpx;height: 100rpx;border-radius: 50%;border: 2rpx solid #fff;" 
 					@tap="login"
 					/>
@@ -21,7 +21,7 @@
 				<view class="iconfont icon-xiayige" @click="logout"/>
 			</view>
 			<view class="my_likeContainer" 
-				  v-if="playlist.length"
+				  v-if="playlist.length > 0"
 				  @click="toPlayList(playLickList.id)">
 				<view class="my_like">
 					<text class="iconfont icon-like"/>
@@ -71,18 +71,18 @@
 </template>
 
 <script>
-	import songList from 'pages/my/songList.vue'
+	import songList from 'components/myComponents/songList/songList.vue'
 	
 	import request from 'utils/request.js'
 	
 	let startY = 0;
 	let moveY = 0;
 	let moveDistance = 0;
+	const appGlobalData = getApp().globalData;
 	export default {
 		data() {
 			return {
 				baseImg:'/static/images/user/base.png',
-				src:'/static/images/user/user.png',
 				userInfo:{},//用户信息
 				coverTransform:'translateY(0)',
 				coverTransition:'',
@@ -101,7 +101,6 @@
 				level: 0,//等级
 				scrollTop: 0,
 				toView: '',
-				current_id: 2, // 当前id
 				playLickList: [],
 				playlist: [],
 				myPlaylist: [],
@@ -109,14 +108,17 @@
 			}
 		},
 		mounted(e) {
-			//读取用户基本信息
-			let userInfo = uni.getStorageSync('userInfo');
-			if(userInfo){
-				//更新userInfo的状态
-				this.userInfo = JSON.parse(userInfo)
+			let userInfoList = []
+			userInfoList.push(appGlobalData.userInfo1,appGlobalData.userInfo2,appGlobalData.userInfo3)
+			let userInfo = userInfoList.filter(item => {
+				if(item.length > 0){
+					return item
+				}
+			})
+			if(appGlobalData.userInfo1 || appGlobalData.userInfo2 || appGlobalData.userInfo3){
+				this.userInfo = JSON.parse(userInfo[0])
 				this.getLevel();
-				let uid = this.userInfo.userId
-				this.getSongList(uid)
+				this.getSongList(JSON.parse(userInfo[0]).userId)
 			}
 		},
 		methods: {
@@ -149,24 +151,35 @@
 			login(){
 				if(!this.userInfo.nickname){
 					uni.navigateTo({
-						url:'/components/login/loginMain/loginMain'
+						url:'/pages/login/loginMain/loginMain'
 					})
 				}
 			},
 			logout(){
 				uni.showModal({
 					content: '确定退出登录吗？',
-					success:(res) => {
+					success:async (res) => {
 						if(res.confirm){
-							// request('/logout');
-							// this.userInfo = {}
+							const logoutDate = await request('/logout');
+							if(logoutDate.code === 200){
+								setTimeout(() => {
+									uni.reLaunch({
+										url:'/pages/login/loginMain/loginMain'
+									})
+								})
+								uni.removeStorageSync('userInfo1')
+								uni.removeStorageSync('userInfo2')
+								uni.removeStorageSync('userInfo3')
+							}
 						}
 					}
 				})
 			},
 			async getLevel(){
 				let levelData = await request('/user/level');
-				this.level = levelData.data.level
+				if(levelData.code === 200){
+					this.level = levelData.data.level
+				}
 			},
 			async getSongList(uid){
 				let playListData = await request('/user/playlist',{uid})
@@ -182,13 +195,13 @@
 			},
 			toPlayList(playListId){
 				uni.navigateTo({
-					url:'/components/music/playList/playList?playListId=' + playListId
+					url:'/pages/music/playList/playList?playListId=' + playListId
 				})
 			},
 			scroll(e){
-				if(e.detail.scrollTop === 0){
+				if(e.detail.scrollTop < 795){
 					this.tab = 0
-				} else if(e.detail.scrollTop === 445){
+				} else {
 					this.tab = 2
 				}
 			},
@@ -282,10 +295,10 @@
 		flex-direction: column;
 		width: 720rpx;
 		height: 100%;
+		padding-top:20rpx;
 	}
 	.my_songTitle{
 		height: 100rpx;
-		width: 100%;
 		display: flex;
 		align-items: center;
 		color: #696969;
@@ -300,7 +313,7 @@
 	}
 	
 	.my_songList{
-		margin-top: 5rpx;
+		margin-top: 30rpx;
 		height: 1500rpx;
 		color: #fff;
 	}

@@ -29,7 +29,7 @@
 		methods:{
 			toMusic(songId){
 				uni.navigateTo({
-					url:'/components/music/music?musicId=' + songId
+					url:'/pages/music/music?musicId=' + songId
 				})
 			},
 		}

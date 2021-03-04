@@ -24,7 +24,7 @@
 				if(bannerInfo.song){
 					let songId = bannerInfo.song.id
 					uni.navigateTo({
-						url:'/components/music/music?musicId=' + songId
+						url:'/pages/music/music?musicId=' + songId
 					})
 				}
 				if(bannerInfo.url){

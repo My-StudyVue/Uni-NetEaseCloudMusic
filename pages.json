@@ -10,7 +10,7 @@
 			}
 		},
 		{
-			"path": "components/login/loginMain/loginMain",
+			"path": "pages/login/loginMain/loginMain",
 			"style": {
 				"navigationStyle":"custom",// 去掉微信小程序顶部导航
 				"app-plus":{
@@ -19,29 +19,29 @@
 			}
 		},
 		{
-			"path": "components/login/loginPhone/loginPhone",
+		    "path" : "pages/login/loginMain/agreement/agreement",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "navigationBarBackgroundColor":"#fff"
+		    }
+		},
+		{
+			"path": "pages/login/loginPhone/loginPhone",
 			"style": {
 				"navigationBarTitleText": "手机号登录",
 				"navigationBarBackgroundColor":"#fff"
 			}
 		},
 		{
-			"path" : "components/login/loginPhone/loginForgetPwd",
+			"path" : "pages/login/loginPhone/loginForgetPwd",
 			"style": {
 				"navigationBarTitleText": "忘记密码",
 				"navigationBarBackgroundColor":"#fff"
 			}
 		},
 		{
-		    "path" : "components/findComponents/redIcon/everdaySong/everdaySong",
-		    "style" :{
-		        "navigationBarTitleText": "每日推荐",
-		        "navigationBarBackgroundColor":"#fff"
-		    }
-		    
-		},
-		{
-		    "path" : "components/music/music",
+		    "path" : "pages/music/music",
 		    "style": {
 		    	"navigationStyle":"custom",// 去掉微信小程序顶部导航
 		    	"app-plus":{
@@ -50,14 +50,14 @@
 		    }
 		},
         {
-            "path" : "components/music/playList/playList",
+            "path" : "pages/music/playList/playList",
             "style": {
             	"navigationBarTitleText": "歌单",
             	"navigationBarBackgroundColor":"#fff"
             }
         },
 		{
-            "path" : "components/music/playList/playListInfo/playListInfo",
+            "path" : "pages/music/playList/playListInfo/playListInfo",
             "style": {
             	"navigationStyle":"custom",// 去掉微信小程序顶部导航
             	"app-plus":{
@@ -66,26 +66,34 @@
             }
         },
 		{
-            "path" : "components/search/search",
+            "path" : "pages/search/search",
             "style" :{
                 "navigationBarTitleText": "搜索音乐",
                 "navigationBarBackgroundColor":"#fff"
             }
         },
 		{
-		    "path" : "components/search/searchDetail",
+		    "path" : "pages/search/searchDetail",
 		    "style" :{
 		        "navigationBarTitleText": "搜索结果",
 		        "navigationBarBackgroundColor":"#fff"
 		    }
 		},
 		{
-            "path" : "components/login/loginMain/agreement/agreement",
+		    "path" : "components/findComponents/redIcon/everdaySong/everdaySong",
+		    "style" :{
+		        "navigationBarTitleText": "每日推荐",
+		        "navigationBarBackgroundColor":"#fff"
+		    }
+		},
+        {
+            "path" : "components/findComponents/redIcon/playListPlaze/playListPlaze",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor":"#fff"
+                "navigationBarTitleText": "歌单广场",
+				"navigationBarBackgroundColor":"#fff"
             }
+            
         }
     ],
 	"globalStyle": {

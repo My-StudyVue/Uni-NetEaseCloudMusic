@@ -1,5 +1,5 @@
 <template>
-	<scroll-view class="musicList" scroll-y>
+	<scroll-view class="musicList" scroll-y :scroll-top="scrollTop">
 		<view class="playListItem"
 			  v-for="item in playlist"
 			  style="height: 150rpx;"
@@ -20,6 +20,7 @@
 		data() {
 			return {
 				playlist:[],
+				scrollTop:0
 			}
 		},
 		props:{
@@ -35,7 +36,7 @@
 			},
 			toPlayList(playListId){
 				uni.navigateTo({
-					url:'/components/music/playList/playList?playListId=' + playListId
+					url:'/pages/music/playList/playList?playListId=' + playListId
 				})
 			},
 			_getNum(num){

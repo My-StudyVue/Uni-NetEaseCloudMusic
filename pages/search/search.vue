@@ -11,7 +11,7 @@
 			</view>
 			<text class="cancel" @click="cancel">取消</text>
 		</view>
-		<block v-if="searchList.length">
+		<block v-if="searchList.length > 0">
 			<view class="showSearchContent">
 				<view class="searchContent">搜索内容:“{{searchContent}}”</view>
 				<view class="searchList">
@@ -63,6 +63,7 @@
 	import request from 'utils/request.js'
 	
 	let isSend = false;//函数节流使用
+	let handlehostList = [];
 	
 	export default {
 		data() {
@@ -70,16 +71,25 @@
 				searchDefault: '', //placeholder内容
 				hostList: [], //热搜榜数据
 				searchContent: '', //input数据
-				historyContent: '',
 				searchList: [], //关键字模糊匹配数据
 				historyList: [], //搜索历史记录
 				color: '',
 				showSync: false,
 			}
 		},
+		// watch:{
+		// 	historyList(data){
+		// 		handlehostList = Array.from(new Set(data))
+		// 	}
+		// },
 		mounted() {
 			this.getInitData()
-			this.getSearchHistory()
+			this.historyList = handlehostList
+			console.log(handlehostList,this.historyList)
+			// this.getSearchHistory()
+			let A = ['a','b','c','b','a']
+			A = Array.from(new Set(A))
+			console.log(A)
 		},
 		methods: {
 			async getInitData(){
@@ -105,48 +115,46 @@
 					content: '确认删除吗？',
 					success: (res) => {
 						if(res.confirm){
-							this.historyList = [],
-							uni.removeStorageSync('serchHistoty')
+							this.historyList = []
+							// uni.removeStorageSync('serchHistoty')
 						}
 					}
 				})
 			},
 			handleInputChange(e){
 				this.searchContent = e.detail.value.trim()
-				if(this.searchContent){
+				console.log(e.detail.value.trim())
+				if(e.detail.value.trim()){
 					if(isSend){
 						return 
 					}
 					isSend = true
+					console.log(e.detail.value.trim())
 					this.getSearchList()
+					
 					//函数节流
 					setTimeout(() => {
 						isSend = false;
 					},300)
-				}
-			},
-			async getSearchList(){
-				if(!this.searchContent){
+				}else{
 					this.searchList = [];
 					return
 				}
+			},
+			async getSearchList(){
 				let {searchContent, historyList} = this.$data
 				let searchListData = await request('/cloudsearch',{keywords:searchContent, limit:10})
 				this.searchList = searchListData.result.songs
+				historyList.push(searchContent)
 				//添加到历史记录中
-				if(historyList.indexOf(searchContent) !== -1){
-					historyList.splice(historyList.indexOf(searchContent), 1)
-				} 
-				historyList.unshift(searchContent)
-				uni.setStorageSync('serchHistoty', historyList)
-			},
-			getSearchHistory(){
-				let historyList = uni.getStorageSync('serchHistoty')
-				if(historyList){
-					this.historyList = historyList
-				}
+				// if(historyList.indexOf(searchContent) !== -1){
+				// 	historyList.splice(historyList.indexOf(searchContent), 1)
+				// } 
+				// historyList.unshift(searchContent)
+				// uni.setStorageSync('serchHistoty', historyList)
 			},
 			toSearchDetail(songName){
+				this.historyList.push(songName)
 				uni.navigateTo({
 					url:'./searchDetail?keyWords=' + songName
 				})

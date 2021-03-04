@@ -73,12 +73,12 @@
 			},
 			toMusic(songId){
 				uni.navigateTo({
-					url:'/components/music/music?musicId=' + songId
+					url:'/pages/music/music?musicId=' + songId
 				})
 			},
 			toPlayList(playListId){
 				uni.navigateTo({
-					url:'/components/music/playList/playList?playListId=' + playListId
+					url:'/pages/music/playList/playList?playListId=' + playListId
 				})
 			},
 			_getNum(num){
@@ -94,10 +94,17 @@
 				let tab = this.all.tab
 				if(e.currentTarget.offsetTop <= 500){
 					tab = 1
+					this.toTop()
 				} else {
 					tab = 2
+					this.toTop()
 				}
 				this.$emit("moreClick", tab)
+			},
+			toTop(){
+				uni.pageScrollTo({
+					scrollTop:0
+				})
 			},
 		}
 	}

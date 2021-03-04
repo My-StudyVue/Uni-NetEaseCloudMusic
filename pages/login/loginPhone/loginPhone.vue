@@ -75,11 +75,8 @@
 							url:'/pages/index/index'
 						})
 					},1000)
-					//将登录手机和密码存储至本地
-					// uni.setStorageSync('userPhone', phone)
-					// uni.setStorageSync('userPassword', password)
-					//将用户信息存储至本地
-					uni.setStorageSync('userInfo',JSON.stringify(result.profile))
+					uni.setStorageSync('userLogin', {phone:phone,password:password})
+					uni.setStorageSync('userInfo1',JSON.stringify(result.profile))
 					uni.showToast({
 						title:'',
 						icon:'loading'

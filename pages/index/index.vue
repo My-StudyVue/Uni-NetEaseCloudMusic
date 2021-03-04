@@ -13,18 +13,27 @@
 			<my></my>
 		</view>
 		<view class="content" v-show="tabCur === 1">
+			<banner :swipers="bannerList"></banner>
+			<redIcon></redIcon>
+			<recommend :poster="recommendList"></recommend>
+			<chart :chart="chartList"></chart>
+			<broad></broad>
 			<!-- 祖孙传值 -->
-			<find 
+			<!-- <find 
 				:swipers="bannerList" 
 				:poster="recommendList"
 				:chart="chartList"
-			></find>
+			></find> -->
 		</view>
 	</view>
 </template>
 
 <script>
-import find from '../find/find.vue'
+import banner from 'components/findComponents/banner/banner.vue'
+import redIcon from 'components/findComponents/redIcon/redIcon.vue'
+import recommend from 'components/findComponents/recommend/recommend.vue'
+import chart from 'components/findComponents/chart/chart.vue'
+import broad from 'components/findComponents/broad/broad.vue'
 import my from '../my/my.vue'
 
 import request from 'utils/request.js'
@@ -120,12 +129,16 @@ import request from 'utils/request.js'
 			},
 			search(){
 				uni.navigateTo({
-					url: '/components/search/search'
+					url: '/pages/search/search'
 				})
 			}
 		},
 		components: {
-			find,
+			banner,
+			redIcon,
+			recommend,
+			chart,
+			broad,
 			my
 		}
 	}

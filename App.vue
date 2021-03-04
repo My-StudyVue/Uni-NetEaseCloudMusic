@@ -3,6 +3,9 @@ export default {
 	globalData: {//全局标识
 		isMusicPlay: false,
 		musicId: '',
+		userInfo1:uni.getStorageSync('userInfo1'),
+		userInfo2:uni.getStorageSync('userInfo2'),
+		userInfo3:uni.getStorageSync('userInfo3'),
 	},
 	onLaunch: function() {
 		console.log('App Launch');

@@ -28,7 +28,7 @@
 		methods: {
 			toPlayList(playListId){
 				uni.navigateTo({
-					url:'/components/music/playList/playList?playListId=' + playListId
+					url:'/pages/music/playList/playList?playListId=' + playListId
 				})
 			},
 		},

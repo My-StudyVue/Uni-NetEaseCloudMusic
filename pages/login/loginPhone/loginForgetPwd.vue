@@ -156,7 +156,7 @@
 						})
 					},1000)
 					//将用户信息存储至本地
-					uni.setStorageSync('userInfo',JSON.stringify(result.profile))
+					uni.setStorageSync('userInfo3',JSON.stringify(result.profile))
 					uni.showToast({
 						title:'',
 						icon:'loading'
