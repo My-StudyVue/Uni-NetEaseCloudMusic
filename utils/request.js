@@ -1,7 +1,15 @@
 //封装网络请求
 import config from './config.js'
 
+//同时发送异步代码的次数
+let ajaxtime=0;
+export function Finish(){
+	return true
+}
+
 export default (url, data = {}, method='GET') => {
+	//发送一次 +1
+	ajaxtime++;
 	return new Promise((resolve,reject) => {
 		uni.request({
 			url: config.host + url,
@@ -13,6 +21,12 @@ export default (url, data = {}, method='GET') => {
 			},
 			fail: (err) => {
 				reject(err.data)
+			},
+			complete:()=>{ //成功失败都执行的函数
+			    ajaxtime--;
+			    if(ajaxtime===0){
+					Finish()
+			    }
 			}
 		})
 	}).catch(e => {});
