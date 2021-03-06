@@ -72,6 +72,7 @@
 		align-items: center;
 	}
 	.playListItem .content{
+		background: #fff;
 		font-size: 28rpx;
 		display: flex;
 		flex-direction: column;

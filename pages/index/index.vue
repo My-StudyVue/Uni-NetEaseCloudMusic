@@ -17,13 +17,7 @@
 			<redIcon></redIcon>
 			<recommend :poster="recommendList"></recommend>
 			<chart :chart="chartList"></chart>
-			<broad></broad>
-			<!-- 祖孙传值 -->
-			<!-- <find 
-				:swipers="bannerList" 
-				:poster="recommendList"
-				:chart="chartList"
-			></find> -->
+			<broad :broad="broadList"></broad>
 		</view>
 	</view>
 </template>
@@ -52,12 +46,14 @@ import request from 'utils/request.js'
 				bannerList:[],//轮播图
 				recommendList:[],//推荐歌单
 				chartList:[],//排行榜
+				broadList:[],//电台
 			}
 		},
 		onLoad(){
 			this.getbannerList()
 			this.getrecommendList()
 			this.getchartListId()
+			this.getbroadList()
 		},
 		methods: {
 			async getbannerList(){
@@ -93,6 +89,11 @@ import request from 'utils/request.js'
 					item.tracks = [...new Set(item.tracks)].slice(0,3)
 					return item
 				})
+			},
+			async getbroadList(){
+				let broadListData1 = await request('/dj/personalize/recommend',{limit:5});//推荐电台
+				let broadListData2 = await request('/dj/radio/hot',{limit:5,cateId:2001});//热门电台
+				this.broadList.push(broadListData1.data,[],broadListData2.djRadios.slice(0,5))
 			},
 		    clickCtTab(ctCur){
 		        this.tabCur = ctCur

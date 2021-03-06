@@ -152,6 +152,7 @@
 		align-items: center;
 	}
 	.songItem .content{
+		background: #fff;
 		display: flex;
 		flex-direction: column;
 		white-space: nowrap;
@@ -172,6 +173,7 @@
 	}
 	
 	.playListItem .content{
+		background: #fff;
 		font-size: 28rpx;
 		display: flex;
 		flex-direction: column;

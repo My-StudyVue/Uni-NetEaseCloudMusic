@@ -23,7 +23,7 @@
 			<view class="music_progress">
 				<text>{{currentTime}}</text>
 				<view class="music_bar">
-					<view class="music_timeBar" :style="{'width':currentWidth + 'rpx'}">
+					<view class="music_timeBar" :style="{width: currentWidth + 'px'}">
 						<view class="music_circle"/>
 					</view>
 				</view>
@@ -95,7 +95,7 @@
 			backgroundAudioManager.onTimeUpdate(() => {
 				let currentTimeNum = backgroundAudioManager.currentTime;
 				this.currentTime = String(this.handleTime(currentTimeNum * 1000));
-				this.currentWidth = (new Date(currentTimeNum).getMilliseconds()) / (new Date(_durationTimeNum).getMilliseconds()) * 450;
+				this.currentWidth = (new Date(currentTimeNum).getMilliseconds()) / (new Date(_durationTimeNum).getMilliseconds()) * 430;
 			});
 		},
 		methods: {
