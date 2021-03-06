@@ -1,29 +1,31 @@
 <template>
-	<view class="broad">
-		<view class="broad_title">
-			<view :class="{ 'active': index == tab }"
-				  v-for="(item,index) in tabList" 
-				  :key="index"
-				  @click="clickTab(index)">
-				<text v-text="item.title" style="padding: 0 10rpx;"/>
-			</view>
-		</view>
-		<swiper class="broad_container" display-multiple-items="2">
-			<swiper-item v-for="item in broad[tab]"
-						 :key="item.id" 
-						 style="width: 200rpx;">
+   <view>
+	 <view class="broad_title">
+	 	<view :class="{ 'active': index == tab }"
+	 		  v-for="(item,index) in tabList" 
+	 		  :key="index"
+	 		  @click="clickTab(index)">
+	 		<text v-text="item.title" style="padding: 0 10rpx;"/>
+	 	</view>
+	 </view>
+     <scroll-view 
+     class="broad_container" 
+     scroll-x="true">
+         <view  class="broad_container_item" 
+				v-for="item in broad[tab]"
+		 		:key="item.id">
 				<image :src="item.picUrl" style="width: 250rpx;height: 250rpx;border-radius: 50%;">
 					<view class="broad_container_title">{{item.name}}</view>
 				</image>
-			</swiper-item>
-		</swiper>
-	</view>
+         </view>
+     </scroll-view>
+   </view>
 </template>
-
+ 
 <script>
-	export default {
-		data() {
-			return {
+	export default{
+		data(){
+			return{
 				tab:0,
 				tabList:[
 					{
@@ -35,14 +37,11 @@
 					{
 						title:'个性化推荐',
 					},
-				],
+				]
 			}
 		},
 		props:{
 			broad:Array
-		},
-		mounted() {
-			console.log(this.broad,this.tab)
 		},
 		methods: {
 			clickTab(current){
@@ -53,11 +52,8 @@
 		}
 	}
 </script>
-
-<style>
-	.broad{
-		
-	}
+ 
+<style scoped>
 	.broad_title{
 		height: 100rpx;
 		display: flex;
@@ -71,29 +67,24 @@
 		color:#000;
 		font-weight: 700;
 	}
-	/* .broad_container{
-		display: flex;
-		align-items: center;
-	} */
+	
+	.broad_container{
+	  white-space: nowrap;
+	  overflow: hidden;
+	  width: 100%;
+	  height: 330rpx;
+	}
+	.broad_container_item{
+	  width: 280rpx;
+	  height: 200rpx;
+	  display: inline-block;
+	  margin: 0 20rpx;
+	}
 	.broad_container_title{
-		display: flex;
 		align-items: center;
-		text-overflow: -o-ellipsis-lastline;
-		overflow: hidden;
-		text-overflow: ellipsis;
 		display: -webkit-box;
-		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
-		/* font-size: 12px; */
+		overflow: hidden;
 		width: 250rpx;
-	}
-	
-	swiper{
-		height: 190px;
-	}
-	
-	swiper-item{
-	    width: 160px !important;
-		transform: translate3d(0px, 0px, 0px);
 	}
 </style>

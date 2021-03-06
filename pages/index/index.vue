@@ -91,9 +91,9 @@ import request from 'utils/request.js'
 				})
 			},
 			async getbroadList(){
-				let broadListData1 = await request('/dj/personalize/recommend',{limit:5});//推荐电台
-				let broadListData2 = await request('/dj/radio/hot',{limit:5,cateId:2001});//热门电台
-				this.broadList.push(broadListData1.data,[],broadListData2.djRadios.slice(0,5))
+				let broadListData1 = await request('/dj/personalize/recommend');//推荐电台
+				let broadListData2 = await request('/dj/radio/hot',{limit:6,cateId:2001});//热门电台
+				this.broadList.push(broadListData1.data,[],broadListData2.djRadios.slice(0,6))
 			},
 		    clickCtTab(ctCur){
 		        this.tabCur = ctCur
