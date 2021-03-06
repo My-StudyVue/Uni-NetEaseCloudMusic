@@ -63,10 +63,8 @@
 		},
 		mounted() {
 			// 判断用户是否登录
-			// const userInfo1 = uni.getStorageSync('userInfo1');
-			// const userInfo2 = uni.getStorageSync('userInfo2');
-			// const userInfo3 = uni.getStorageSync('userInfo3');
-			if(!appGlobalData.userInfo1 && !appGlobalData.userInfo2 && !appGlobalData.userInfo3){
+			const userInfo = appGlobalData.userInfo1 || appGlobalData.userInfo2 || appGlobalData.userInfo3
+			if(!userInfo){
 				uni.showToast({
 					title:'请先登录',
 					icon:'none',

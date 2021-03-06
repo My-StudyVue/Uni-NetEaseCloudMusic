@@ -69,28 +69,24 @@
 		onLoad(options) {
 			this.musicId = options.musicId;
 			this.getMusicInfo(options.musicId);
+			app.globalData.isMusicPlay = this.isPlay
 			//判断当前页面音乐是否在播放
 			if(app.globalData.isMusicPlay && app.globalData.musicId === options.musicId){
 				this.isPlay = true
+				backgroundAudioManager.autoplay = true
 			}
-			
+			console.log(this.isPlay)
 			//监听音乐的播放/暂停/停止/自动完成播放
 			backgroundAudioManager.onPlay(() =>{
-				this.chagePlayState(true)
+				// this.chagePlayState(true)
 				app.globalData.musicId = options.musicId;
-			});
-			//监听音乐实时播放的时间
-			backgroundAudioManager.onTimeUpdate(() => {
-				let time = backgroundAudioManager.currentTime;
-				this.currentTime = String(this.handleTime(time * 1000));
-				console.log(this.currentTime)
-				this.currentWidth = time / this.durationTime * 450;
+				app.globalData.isMusicPlay = this.isPlay = true
+				// console.log(this.isPlay,app.globalData.isMusicPlay)
 			});
 			backgroundAudioManager.onPause(() => {
-				this.chagePlayState(false)
-			});
-			backgroundAudioManager.onStop(() => {
-				this.chagePlayState(false)
+				// this.chagePlayState(false)
+				app.globalData.isMusicPlay = this.isPlay = false
+				// console.log(this.isPlay,app.globalData.isMusicPlay)
 			});
 			backgroundAudioManager.onEnded(() => {
 				uni.$emit('switchType',{
@@ -99,12 +95,19 @@
 				this.currentWidth = 0;
 				this.currentTime = '00:00'
 			});
+			//监听音乐实时播放的时间
+			backgroundAudioManager.onTimeUpdate(() => {
+				let time = backgroundAudioManager.currentTime;
+				this.currentTime = String(this.handleTime(time * 1000));
+				// console.log(this.currentTime)
+				this.currentWidth = time / this.durationTime * 450;
+			});
 		},
 		methods: {
-			chagePlayState(isPlay){
-				this.isPlay = isPlay;
-				app.globalData.isMusicPlay = isPlay;
-			},
+			// chagePlayState(isPlay){
+			// 	this.isPlay = isPlay;
+			// 	app.globalData.isMusicPlay = isPlay;
+			// },
 			async getMusicInfo(musicId){
 				let songData = await request('/song/detail',{ids:musicId});
 				this.song = songData.songs
@@ -113,25 +116,25 @@
 			},
 			musicPlay(){
 				this.isPlay = !this.isPlay;
-				this.musicControl(this.musicId, this.isPlay, _musicLink);
+				let {musicId,isPlay} = this.$data
+				this.musicControl(musicId, isPlay, _musicLink);
 			},
 			async musicControl(musicId, isPlay, musicLink){
-				//判断当前页面音乐是否在播放
-				if(app.globalData.isMusicPlay && app.globalData.musicId === musicId){
-					isPlay = true
-					backgroundAudioManager.autoplay = true
-				}
+				let time = backgroundAudioManager.currentTime
 				if(isPlay){
-					console.log(_musicLink)
 					if(!musicLink){
 						//获取播放链接
 						let musicLinkData = await request('/song/url',{id:musicId});
 						_musicLink = musicLinkData.data[0].url;
+						backgroundAudioManager.startTime = time;
 					}
 					backgroundAudioManager.src = _musicLink;
 					backgroundAudioManager.title = this.song[0].name;
 					backgroundAudioManager.play();
+					// backgroundAudioManager.seek(new Date(time).getMilliseconds())
 				}
+				console.log(this.isPlay,isPlay)
+				backgroundAudioManager.pause();
 			},
 			handleSwitch(e){
 				let type = e.currentTarget.id;
@@ -147,6 +150,7 @@
 				uni.$emit('switchType',{
 					msg:type
 				})
+				this.isPlay = true
 			},
 			handleTime(time){
 				let minute = Math.floor(time / 1000 / 60);
