@@ -66,6 +66,15 @@
             }
         },
 		{
+		    "path" : "pages/board/board",
+		    "style": {
+		    	"navigationStyle":"custom",// 去掉微信小程序顶部导航
+		    	"app-plus":{
+		    		"titleNView":false //去掉app+h5顶部导航
+		    	}
+		    }    
+		},
+		{
             "path" : "pages/search/search",
             "style" :{
                 "navigationBarTitleText": "搜索音乐",
