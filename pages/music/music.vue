@@ -79,11 +79,10 @@
 			backgroundAudioManager.onPlay(() =>{
 				app.globalData.isMusicPlay = this.isPlay = true
 				app.globalData.musicId = musicId;
-				console.log('onPlay',app.globalData.isMusicPlay,app.globalData.musicId)
+				backgroundAudioManager.seek(new Date(app.globalData.currentTimeNum).getMilliseconds())
 			});
 			backgroundAudioManager.onPause(() => {
 				app.globalData.isMusicPlay = this.isPlay = false
-				console.log('onPause',app.globalData.isMusicPlay,app.globalData.musicId)
 			});
 			backgroundAudioManager.onEnded(() => {
 				uni.$emit('switchType',{
@@ -113,7 +112,7 @@
 			},
 			async musicControl(musicId, isPlay, musicLink){
 				if(isPlay){
-					if(!musicLink){
+					if(!musicLink || _musicLink !== musicLink){
 						//获取播放链接
 						let musicLinkData = await request('/song/url',{id:musicId});
 						_musicLink = musicLinkData.data[0].url;
@@ -122,9 +121,10 @@
 					backgroundAudioManager.src = _musicLink;
 					backgroundAudioManager.title = this.song[0].name;
 					backgroundAudioManager.play();
-					// backgroundAudioManager.seek(new Date(time).getMilliseconds())
+				}else{
+					app.globalData.currentTimeNum = backgroundAudioManager.currentTime;
+					backgroundAudioManager.pause();
 				}
-				backgroundAudioManager.pause();
 			},
 			handleSwitch(e){
 				let type = e.currentTarget.id;
