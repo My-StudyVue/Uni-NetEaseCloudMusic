@@ -49,6 +49,8 @@
 	// import musicBottom from '/pages/music/musicBottom/musicBottom'
 	
 	import request from 'utils/request.js'
+	import pubsub from 'utils/pubsub.js'
+	
 	const appGlobalData = getApp().globalData;
 	export default {
 		data() {
@@ -78,36 +80,20 @@
 			this.day = new Date().getDate();
 			this.month = new Date().getMonth() + 1;
 			this.getEverdatList();
-			//订阅(接受)通信---type
-			uni.$on('switchType',data => {
-				let {everdayList,index} = this.$data;
-				if(data.msg === 'pre'){
-					(index === 0) && (index = everdayList.length);
-					index -= 1;
-				} else {
-					(index === everdayList.length - 1) && (index = -1);
-					index += 1;
-				}
-				this.index = index;
-				let musicId = everdayList[index].id;
-				// 发布(传递)通信---musicId
-				uni.$emit('musicId',{
-					msg:musicId
-				})
-			})
 		},
 		methods: {
 			//获取每日推荐的数据
 			async getEverdatList(){
 				let everdayListDate = await request('/recommend/songs');
 				this.everdayList = everdayListDate.data.dailySongs
+				pubsub.music(this.everdayList,this.index)
 			},
 			playAllSongs(){
-				console.log('xxx')
-				let allSongs = this.everdayList;
-				uni.$emit('allSongs',{
-					msg:allSongs
-				})
+				// console.log('xxx')
+				// let allSongs = this.everdayList;
+				// uni.$emit('allSongs',{
+				// 	msg:allSongs
+				// })
 			},
 			more(){
 				this.isShow = !this.isShow

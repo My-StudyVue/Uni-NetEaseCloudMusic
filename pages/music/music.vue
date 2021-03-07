@@ -32,7 +32,7 @@
 		</view>
 		
 		<view class="music_control">
-			<text class="iconfont icon-circulation"></text>
+			<text :class="chooseMode" @click="handleChange"></text>
 			<text class="iconfont icon-lastSong" id="pre" @click="handleSwitch"></text>
 			<text :class="isPlayMusic" class="big" @click="musicPlay"></text>
 			<text class="iconfont icon-nextSong" id="next" @click="handleSwitch"></text>
@@ -52,13 +52,19 @@
 	const app = getApp();
 	const backgroundAudioManager = uni.getBackgroundAudioManager();
 	let _musicLink = '';
-	let _durationTimeNum = 0
+	let _durationTimeNum = 0;
+	let playMode = {
+			sequence:0,
+			loop:1,
+			random:2
+		};
 	export default {
 		data() {
 			return {
 				song: {},//歌曲详情,
 				musicId:'',//音乐id
 				isPlay: false,
+				mode: 0,
 				currentTime: '00:00',
 				durationTime: '00:00',
 				currentWidth: 0,
@@ -109,6 +115,13 @@
 				this.isPlay = !this.isPlay;
 				let {musicId,isPlay} = this.$data
 				this.musicControl(musicId, isPlay, _musicLink);
+			},
+			handleChange(){
+				let mode = this.mode = (this.mode + 1) % 3;
+				//发布
+				// uni.$emit('switchMode',{
+				// 	msg:mode
+				// })
 			},
 			async musicControl(musicId, isPlay, musicLink){
 				if(isPlay){
@@ -179,7 +192,10 @@
 			},
 			isPlayMusic(){
 				return this.isPlay ? 'iconfont icon-play' : 'iconfont icon-pause'
-			}
+			},
+			chooseMode(){
+				return this.mode === playMode.sequence ? 'iconfont icon-sequence' : this.mode === playMode.loop ? 'iconfont icon-loop' : 'iconfont icon-random'
+			},
 		},
 		components:{
 			playRecently

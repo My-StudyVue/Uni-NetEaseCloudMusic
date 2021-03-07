@@ -74,18 +74,15 @@ import request from 'utils/request.js'
 					let chartListId = chartListIdData.map(item => {
 						return item.id
 					})
-					chartListId.map(item => this.handlechartList(item))
+					let arr =[]
+					chartListId.map(item => this.handlechartList(item,arr))
 				}
 			},
-			async handlechartList(item){
+			async handlechartList(item,arr){
 				let chartListData = await request('/playlist/detail', {id: item});
-				this.chartList.push(chartListData.playlist)
-				this.chartList.map((item,index) => {
+				arr.push(chartListData.playlist)
+				this.chartList = arr.map((item,index) => {
 					item['background'] = 'chart_swiper_view' + index
-				})
-				let arr = this.chartList
-				this.chartList = []
-				this.chartList = arr.map(item => {
 					item.tracks = [...new Set(item.tracks)].slice(0,3)
 					return item
 				})
