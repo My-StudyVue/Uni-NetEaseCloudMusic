@@ -10,7 +10,7 @@
 			</view>
 			<view class="songItem"
 				  v-for="item in songList"
-				  @click="toMusic(item.id)">
+				  @click="toMusic(item.id,index)">
 				<view class="content">
 					<text style="font-weight: 600;">{{item.name}}</text>
 					<text style="font-size: 28rpx;color: #4c4c4c;">{{item.ar[0].name}} - {{item.name}}</text>
@@ -53,6 +53,7 @@
 				songCount:0,
 				playList:[],
 				playlistCount:0,
+				index:0,
 			}
 		},
 		props:{
@@ -65,13 +66,15 @@
 			async getSearchResult(keywords){
 				let songListDate = await request('/cloudsearch',{keywords, limit:5})
 				this.songList = songListDate.result.songs
+				pubsub.music(songListDate.result.songs,this.index)
 				this.songCount = songListDate.result.songCount
 				//
 				let playListDate = await request('/cloudsearch',{keywords, limit:5, type:1000})
 				this.playList = playListDate.result.playlists
 				this.playlistCount = playListDate.result.playlistCount
 			},
-			toMusic(songId){
+			toMusic(songId,index){
+				this.index = index
 				uni.navigateTo({
 					url:'/pages/music/music?musicId=' + songId
 				})

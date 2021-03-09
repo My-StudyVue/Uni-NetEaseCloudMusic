@@ -85,7 +85,7 @@ import pubsub from 'utils/pubsub.js'
 				this.chartList = arr.map((chart,index) => {
 					chart['background'] = 'chart_swiper_view' + index
 					chart.tracks = [...new Set(chart.tracks)].slice(0,3)
-					chart.tracks.map((a,b)=> {
+					chart.tracks.forEach((a,b)=> {
 						pubsub.music(chart.tracks,b)
 					})
 					return chart

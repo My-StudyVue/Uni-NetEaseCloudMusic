@@ -16,7 +16,7 @@
 			<view class="item" 
 				  v-for="(item, index) in balladList" 
 				  :key="item.id"
-				  @click="toMusic(item.id)">
+				  @click="toMusic(item.id,index)">
 				<checkbox-group>
 					<label>
 						<checkbox v-show="isShow" :checked="isTrue" color="rgb(240, 19, 19)" style="transform:scale(0.9);" />
@@ -55,7 +55,8 @@
 			more(){
 				this.isShow = !this.isShow
 			},
-			toMusic(songId){
+			toMusic(songId,index){
+				this.index = index
 				if(!this.isShow){
 					uni.navigateTo({
 						url:'/pages/music/music?musicId=' + songId
@@ -65,6 +66,7 @@
 			async getballadList(keywords){
 				let balladListDate = await request('/cloudsearch',{keywords, limit:100})
 				this.balladList = balladListDate.result.songs
+				pubsub.music(balladListDate.result.songs,this.index)
 			}
 		}
 	}

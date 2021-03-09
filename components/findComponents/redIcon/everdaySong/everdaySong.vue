@@ -86,7 +86,7 @@
 			async getEverdatList(){
 				let everdayListDate = await request('/recommend/songs');
 				this.everdayList = everdayListDate.data.dailySongs
-				pubsub.music(this.everdayList,this.index)
+				pubsub.music(everdayListDate.data.dailySongs,this.index)
 			},
 			playAllSongs(){
 				// console.log('xxx')

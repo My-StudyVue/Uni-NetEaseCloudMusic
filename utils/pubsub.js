@@ -1,7 +1,9 @@
 export default  class pubsub {
 	static music(arrayList,index){
 		//订阅(接受)通信---type
+		console.log(arrayList,index)
 		return uni.$on('switchType',data => {
+			console.log(arrayList,index)
 			if(data.msg === 'pre'){
 				(index === 0) && (index = arrayList.length);
 				index -= 1;

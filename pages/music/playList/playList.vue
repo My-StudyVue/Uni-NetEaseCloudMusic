@@ -157,6 +157,7 @@
 				}
 				let songItem = await request('/song/detail',{ids:this.playListSongId});
 				this.playList.tracks = songItem.songs
+				pubsub.music(songItem.songs,this.index)
 			},
 			more(tab){
 				if(tab === 3){
