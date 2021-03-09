@@ -31,6 +31,7 @@ import broad from 'components/findComponents/broad/broad.vue'
 import my from '../my/my.vue'
 
 import request from 'utils/request.js'
+import pubsub from 'utils/pubsub.js'
 	export default {
 		data() {
 			return {
@@ -81,10 +82,13 @@ import request from 'utils/request.js'
 			async handlechartList(item,arr){
 				let chartListData = await request('/playlist/detail', {id: item});
 				arr.push(chartListData.playlist)
-				this.chartList = arr.map((item,index) => {
-					item['background'] = 'chart_swiper_view' + index
-					item.tracks = [...new Set(item.tracks)].slice(0,3)
-					return item
+				this.chartList = arr.map((chart,index) => {
+					chart['background'] = 'chart_swiper_view' + index
+					chart.tracks = [...new Set(chart.tracks)].slice(0,3)
+					chart.tracks.map((a,b)=> {
+						pubsub.music(chart.tracks,b)
+					})
+					return chart
 				})
 			},
 			async getbroadList(){

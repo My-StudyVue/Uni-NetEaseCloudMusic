@@ -12,8 +12,9 @@ export default (url, data = {}, method='GET') => {
 	ajaxtime++;
 	return new Promise((resolve,reject) => {
 		uni.request({
-			url: config.host + url,
-			// url: config.mobileHost + url,//真机测试
+			// url: config.localhost + url,    //本地测试
+			url: config.vercelHost + url,      //vercel测试
+			// url: config.mobileHost + url,   //真机测试
 			data,
 			method,
 			success: (res) => {
