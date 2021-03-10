@@ -49,7 +49,10 @@
 					<checkbox v-show="isShow" :checked="isTrue" color="rgb(240, 19, 19)" style="transform:scale(0.9);" />
 				</label>
 			</checkbox-group>
-			<view style="width: 40rpx;color: #555555;">{{index+1}}</view>
+			<view style="width: 40rpx;color: #555555;">
+				<text v-if="item.id===playListId" class="iconfont icon-playing" style="color: rgb(240, 19, 19);"></text>
+				<text v-else >{{index+1}}</text>
+				</view>
 			<view class="music">
 				<text style="font-weight: 700;">{{item.name}}</text>
 				<text class="author">{{item.ar[0].name}}-{{item.al.name}}</text>
@@ -68,6 +71,7 @@
 
 <script>
 	import request from 'utils/request.js'
+	import pubsub from 'utils/pubsub.js'
 	
 	const appGlobalData = getApp().globalData;
 	
