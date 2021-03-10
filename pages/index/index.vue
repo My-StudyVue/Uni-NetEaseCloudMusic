@@ -31,7 +31,6 @@ import broad from 'components/findComponents/broad/broad.vue'
 import my from '../my/my.vue'
 
 import request from 'utils/request.js'
-import pubsub from 'utils/pubsub.js'
 	export default {
 		data() {
 			return {
@@ -85,8 +84,8 @@ import pubsub from 'utils/pubsub.js'
 				this.chartList = arr.map((chart,index) => {
 					chart['background'] = 'chart_swiper_view' + index
 					chart.tracks = [...new Set(chart.tracks)].slice(0,3)
-					chart.tracks.forEach((a,b)=> {
-						pubsub.music(chart.tracks,b)
+					appGlobalData.playIdList = chart.tracks.map(a => {
+						return a.id
 					})
 					return chart
 				})

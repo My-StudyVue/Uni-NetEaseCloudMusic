@@ -65,8 +65,11 @@
 			},
 			async getballadList(keywords){
 				let balladListDate = await request('/cloudsearch',{keywords, limit:100})
-				this.balladList = balladListDate.result.songs
-				pubsub.music(balladListDate.result.songs,this.index)
+				let balladList = balladListDate.result.songs
+				this.balladList = balladList
+				appGlobalData.playIdList = balladList.map(item => {
+					return item.id
+				})
 			}
 		}
 	}

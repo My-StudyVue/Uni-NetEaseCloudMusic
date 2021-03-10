@@ -5,6 +5,7 @@ export default {
 		musicId: '',
 		playIdList:[],
 		currentTimeNum: 0,
+		playwaynum:0,
 		userInfo1:uni.getStorageSync('userInfo1'),
 		userInfo2:uni.getStorageSync('userInfo2'),
 		userInfo3:uni.getStorageSync('userInfo3'),

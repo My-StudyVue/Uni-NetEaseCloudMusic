@@ -70,6 +70,8 @@
 				currentWidth: 0,
 				isShow:false,
 				playRecentlyList: [],
+				isRandom:false,
+				isloop:false,
 				// playRecentlySongId: '',
 			}
 		},
@@ -103,6 +105,22 @@
 				this.currentTime = String(this.handleTime(currentTimeNum * 1000));
 				this.currentWidth = (new Date(currentTimeNum).getMilliseconds()) / (new Date(_durationTimeNum).getMilliseconds()) * 430;
 			});
+			/////////////////////////////////////////////////////////////////////////////////
+			//判断播放顺序
+			switch(this.mode) {
+				case 1:
+					this.isRandom=false
+					this.isloop=false
+				break;
+				case 2:
+					this.isRandom=true
+					this.isloop=false
+				break;
+				case 3:
+					this.isRandom=false
+					this.isloop=true
+				break;
+			}
 		},
 		methods: {
 			async getMusicInfo(musicId){
@@ -114,18 +132,13 @@
 			musicPlay(){
 				this.isPlay = !this.isPlay;
 				let {musicId,isPlay} = this.$data
+				console.log('0',musicId)
 				this.musicControl(musicId, isPlay, _musicLink);
-			},
-			handleChange(){
-				let mode = this.mode = (this.mode + 1) % 3;
-				//发布
-				// uni.$emit('switchMode',{
-				// 	msg:mode
-				// })
 			},
 			async musicControl(musicId, isPlay, musicLink){
 				if(isPlay){
 					if(!musicLink || _musicLink !== musicLink){
+						console.log('5',musicId)
 						//获取播放链接
 						let musicLinkData = await request('/song/url',{id:musicId});
 						_musicLink = musicLinkData.data[0].url;
@@ -142,18 +155,118 @@
 			handleSwitch(e){
 				let type = e.currentTarget.id;
 				backgroundAudioManager.stop();
-				//订阅(接受)通信---musicId
-				uni.$on('musicId',data => {
-					this.getMusicInfo(data.msg);
-					this.musicControl(data.msg,true);
-					//取消订阅(接受)通信---消除累加
-					uni.$off('musicId')
-				})
-				// 发布(传递)通信---type
-				uni.$emit('switchType',{
-					msg:type
-				})
+				let playIdList = app.globalData.playIdList
+				let isRandom = this.isRandom
+				switch(type) {
+					case "pre":
+						//上一曲
+						if(playIdList.length<2){
+							uni.showToast({
+								title: '此曲为单曲',
+								icon: 'none',
+							});					
+						}
+						else if(isRandom){
+							this.handleRandomEvent()
+						}
+						else{
+							let musicId = this.musicId;
+							let length = playIdList.length;
+							let index = playIdList.findIndex(v => v== musicId);
+							this.musicId = musicId = index === 0 ? playIdList[length - 1] : playIdList[index-1];
+							this.getMusicInfo(musicId)
+							this.musicControl(musicId,true);
+						}
+					break;
+					case "next":
+						if(playIdList.length<2){
+							uni.showToast({
+								title: '此曲为单曲',
+								icon: 'none',
+							});
+						}
+						else if(isRandom){
+						    this.handleRandomEvent()
+						}
+						else{
+							let musicId=this.musicId;
+							let length=playIdList.length;
+							let index = playIdList.findIndex(v => v==musicId);
+							this.musicId = musicId = index == length-1 ? playIdList[0] : playIdList[index+1];
+							this.getMusicInfo(musicId)
+							this.musicControl(musicId,true);
+						}
+					break;
+				}
+				
+				// //订阅(接受)通信---musicId
+				// uni.$on('musicId',data => {
+				// 	this.getMusicInfo(data.msg);
+				// 	this.musicControl(data.msg,true);
+				// 	//取消订阅(接受)通信---消除累加
+				// 	uni.$off('musicId')
+				// })
+				// // 发布(传递)通信---type
+				// uni.$emit('switchType',{
+				// 	msg:type
+				// })
 				this.isPlay = true
+			},
+			handleChange(){
+				let mode = this.mode = (this.mode + 1) % 3;
+				switch(mode) {
+					case 1:
+						mode+=1;
+						uni.showToast({
+						  title: '随机播放',
+						  icon: 'success',
+						});
+						this.isRandom=true;
+						this.isloop=false;
+					break;
+					case 2:
+						mode+=1;
+						wx.showToast({
+							title: '单曲循环',
+							icon: 'success',
+						});
+						this.isRandom=false,
+						this.isloop=true
+					break;
+					default:
+						mode = 1
+						uni.showToast({
+							title: '列表循环',
+							icon: 'success',
+						});
+						this.isRandom=false,
+						this.isloop=false
+					break;
+				}
+				app.globalData.playwaynum = mode
+			},
+			//随机播放事件
+			handleRandomEvent(){
+				let musicId = this.musicId;
+				let playIdList = app.globalData.playIdList
+				let length = playIdList.length;
+				if(length < 2){
+					this.musicControl(musicId,true);
+					return;
+				}
+				if(length === 1){
+				  musicId = playIdList[0];
+				} else {
+					do{
+						let range = length - 0;
+						let rand = Math.random();
+						let index=(0 + Math.round(rand * range));
+					}
+					while ((musicId===playIdList[index]) || (index>=playIdList.length)) 
+					musicId=playIdList[index]
+				}
+				this.getMusicInfo(musicId)
+				this.musicControl(musicId,false);
 			},
 			handleTime(time){
 				let minute = Math.floor(time / 1000 / 60);

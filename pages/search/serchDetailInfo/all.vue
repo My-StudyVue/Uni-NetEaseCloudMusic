@@ -65,8 +65,11 @@
 		methods: {
 			async getSearchResult(keywords){
 				let songListDate = await request('/cloudsearch',{keywords, limit:5})
-				this.songList = songListDate.result.songs
-				pubsub.music(songListDate.result.songs,this.index)
+				let songList = songListDate.result.songs
+				this.songList = songList
+				appGlobalData.playIdList = songList.map(item => {
+					return item.id
+				})
 				this.songCount = songListDate.result.songCount
 				//
 				let playListDate = await request('/cloudsearch',{keywords, limit:5, type:1000})

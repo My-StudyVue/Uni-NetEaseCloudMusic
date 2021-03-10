@@ -71,7 +71,6 @@
 
 <script>
 	import request from 'utils/request.js'
-	import pubsub from 'utils/pubsub.js'
 	
 	const appGlobalData = getApp().globalData;
 	
@@ -161,7 +160,9 @@
 				}
 				let songItem = await request('/song/detail',{ids:this.playListSongId});
 				this.playList.tracks = songItem.songs
-				pubsub.music(songItem.songs,this.index)
+				appGlobalData.playIdList = songItem.songs.map(item => {
+					return item.id
+				})
 			},
 			more(tab){
 				if(tab === 3){

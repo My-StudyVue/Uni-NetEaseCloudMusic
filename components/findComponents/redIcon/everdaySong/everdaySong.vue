@@ -49,7 +49,6 @@
 	// import musicBottom from '/pages/music/musicBottom/musicBottom'
 	
 	import request from 'utils/request.js'
-	import pubsub from 'utils/pubsub.js'
 	
 	const appGlobalData = getApp().globalData;
 	export default {
@@ -90,7 +89,6 @@
 				appGlobalData.playIdList = everdayList.map(item => {
 					return item.id
 				})
-				// pubsub.music(everdayListDate.data.dailySongs,this.index)
 			},
 			playAllSongs(){
 				// console.log('xxx')
