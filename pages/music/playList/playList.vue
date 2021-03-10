@@ -50,9 +50,10 @@
 				</label>
 			</checkbox-group>
 			<view style="width: 40rpx;color: #555555;">
-				<text v-if="item.id===playListId" class="iconfont icon-playing" style="color: rgb(240, 19, 19);"></text>
-				<text v-else >{{index+1}}</text>
-				</view>
+				<text>{{item.id}}---{{playListId}}</text>
+				<!-- <text v-if="item.id === playListId" class="iconfont icon-playing" style="color: rgb(240, 19, 19);"></text>
+				<text v-else >{{index+1}}</text> -->
+			</view>
 			<view class="music">
 				<text style="font-weight: 700;">{{item.name}}</text>
 				<text class="author">{{item.ar[0].name}}-{{item.al.name}}</text>
@@ -284,6 +285,7 @@
 	.bottom .item .music{
 		display: flex;
 		flex-direction: column;
+		padding-left: 20rpx;
 		margin-left: 20rpx;
 	}
 	.bottom .item .music text{

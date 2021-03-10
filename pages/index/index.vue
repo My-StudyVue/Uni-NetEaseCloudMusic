@@ -31,6 +31,7 @@ import broad from 'components/findComponents/broad/broad.vue'
 import my from '../my/my.vue'
 
 import request from 'utils/request.js'
+const appGlobalData = getApp().globalData;
 	export default {
 		data() {
 			return {

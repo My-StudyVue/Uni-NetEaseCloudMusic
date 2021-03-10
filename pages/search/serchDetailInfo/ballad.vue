@@ -36,6 +36,7 @@
 <script>
 	import request from 'utils/request.js'
 	
+	const appGlobalData = getApp().globalData;
 	export default {
 		data() {
 			return {
