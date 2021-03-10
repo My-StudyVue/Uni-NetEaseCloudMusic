@@ -3,6 +3,7 @@ export default {
 	globalData: {//全局标识
 		isMusicPlay: false,
 		musicId: '',
+		playIdList:[],
 		currentTimeNum: 0,
 		userInfo1:uni.getStorageSync('userInfo1'),
 		userInfo2:uni.getStorageSync('userInfo2'),

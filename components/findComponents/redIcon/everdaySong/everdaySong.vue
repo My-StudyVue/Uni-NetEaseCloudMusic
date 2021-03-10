@@ -85,8 +85,12 @@
 			//获取每日推荐的数据
 			async getEverdatList(){
 				let everdayListDate = await request('/recommend/songs');
-				this.everdayList = everdayListDate.data.dailySongs
-				pubsub.music(everdayListDate.data.dailySongs,this.index)
+				let everdayList = everdayListDate.data.dailySongs
+				this.everdayList = everdayList
+				appGlobalData.playIdList = everdayList.map(item => {
+					return item.id
+				})
+				// pubsub.music(everdayListDate.data.dailySongs,this.index)
 			},
 			playAllSongs(){
 				// console.log('xxx')

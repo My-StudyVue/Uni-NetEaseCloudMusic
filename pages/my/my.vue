@@ -54,6 +54,7 @@
 							 @click="clickTab(index)"
 							 :style="{'width': index===1 ? '10rpx': ''}">
 					<text v-text="item.title"/>
+					<view class="swiper-tab-line"></view>
 				</scroll-view>
 			</view>
 			<scroll-view 
@@ -308,8 +309,14 @@
 	.my_songTitle .active{
 		color:#000;
 		font-weight: 700;
-		border-bottom: 1rpx solid rgb(240, 19, 19);
-		border-width: 5rpx;
+	}
+	
+	.my_songTitle .active .swiper-tab-line{
+		border-bottom: 4rpx solid #dd4f43;
+		width: 100rpx;
+		margin: auto;
+		border-top: 6rpx solid #dd4f43;
+		border-radius:20rpx;
 	}
 	
 	.my_songList{
