@@ -77,6 +77,7 @@
 		},
 		onLoad(options) {
 			let musicId = options.musicId
+			console.log(musicId)
 			this.musicId = options.musicId;
 			this.getMusicInfo(musicId);
 			//判断当前页面音乐是否在播放
@@ -142,6 +143,13 @@
 						//获取播放链接
 						let musicLinkData = await request('/song/url',{id:musicId});
 						_musicLink = musicLinkData.data[0].url;
+						console.log(_musicLink)
+						if(!_musicLink){
+							uni.showToast({
+								title: '此曲不可播放,请点击下一曲',
+								icon: 'none',
+							});
+						}
 						backgroundAudioManager.startTime = backgroundAudioManager.currentTime;
 					}
 					backgroundAudioManager.src = _musicLink;
