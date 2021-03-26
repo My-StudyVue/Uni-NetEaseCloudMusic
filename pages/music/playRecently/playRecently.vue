@@ -1,41 +1,56 @@
 <template>
 	<view class="container">
 		<view class="top">
-			<text style="font-size: 40rpx;font-weight: 600;">当前播放</text>(36)
+			<text style="font-size: 40rpx;font-weight: 600;">当前播放</text>({{playRecentlyId.length}})
 			<text class="iconfont icon-lajixiang"/>
 		</view>
 		<scroll-view scroll-y class="bottom">
-			<!-- <view class="item" 
-				  v-for="item in playRecently" 
+			<view class="item" 
+				  v-for="item in song" 
 				  :key="item.id">
 				<view class="music">
 					<text style="font-weight: 700;">{{item.name}}-</text>
 					<text class="author">{{item.ar[0].name}}</text>
 				</view>
 				<text class="iconfont icon-quxiao"/>
-			</view> -->
+			</view>
 		</scroll-view>
 	</view>
 </template>
 
 <script>
+	import request from 'utils/request.js'
+	
+	let _musicIdList = []
 	export default {
 		data() {
 			return {
-				
+				song:[]
 			}
 		},
 		props:{
-			playRecentlyList: Array
+			playRecentlyId: Array
+		},
+		watch:{
+			playRecentlyId(id){
+				this.playRecentlyId = id
+			}
 		},
 		mounted() {
-			console.log(this.playRecentlyList)
-			uni.$on('allSongs',data => {
-				console.log(data.msg)
-			})
+			this.getMusicInfo(this.playRecentlyId)
 		},
 		methods: {
-			
+			async getMusicInfo(musicIdList){
+				musicIdList.forEach(item => {
+					_musicIdList += item + ","
+				})
+				//去掉最后一个逗号
+				if (_musicIdList.length > 0) {
+					_musicIdList = _musicIdList.substr(0, _musicIdList.length - 1);
+				}
+				let songData = await request('/song/detail',{ids:_musicIdList});
+				this.song = songData.songs
+			},
 		}
 	}
 </script>
@@ -63,14 +78,12 @@
 	}
 	
 	.container .bottom{
-		padding: 10rpx 20rpx;
-		height: calc(100vh - 500rpx);
+		height: calc(100vh - 930rpx);
 	}
 	.container .bottom .item {
 		position: relative;
 		display: flex;
 		align-items: center;
-		margin-bottom: 20rpx;
 	}
 	.container .bottom .item .music{
 		display: flex;
@@ -91,7 +104,7 @@
 	}
 	.container .bottom .item .iconfont{
 		position: absolute;
-		right: 0;
+		right: 40rpx;
 		width: 40rpx;
 		height: 100rpx;
 		line-height: 100rpx;

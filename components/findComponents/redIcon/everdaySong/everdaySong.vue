@@ -10,7 +10,7 @@
 			<text>/{{month}}</text>
 		</view>
 		<view class="container">
-			<view class="top" @click="playAllSongs">
+			<view class="top">
 				<view style="font-weight: 600;display: flex;">
 					<view class="iconfont icon-pause"
 						  style="font-size: 50rpx;padding-right: 20rpx;"/>
@@ -40,13 +40,13 @@
 					<text class="iconfont icon-ziyuan"/>
 				</view>
 			</scroll-view>
-			<!-- <musicBottom style="position: fixed;bottom: 0;"></musicBottom> -->
+			<musicBottom></musicBottom>
 		</view>
 	</view>
 </template>
 
 <script>
-	// import musicBottom from '/pages/music/musicBottom/musicBottom'
+	import musicBottom from 'pages/music/musicBottom/musicBottom'
 	
 	import request from 'utils/request.js'
 	
@@ -64,8 +64,8 @@
 		},
 		mounted() {
 			// 判断用户是否登录
-			const userInfo = appGlobalData.userInfo1 || appGlobalData.userInfo2 || appGlobalData.userInfo3
-			if(!userInfo){
+			const userInfo = (appGlobalData.userInfo1 === '') && (appGlobalData.userInfo2 === '') && (appGlobalData.userInfo3 === '')
+			if(userInfo){
 				uni.showToast({
 					title:'请先登录',
 					icon:'none',
@@ -86,16 +86,9 @@
 				let everdayListDate = await request('/recommend/songs');
 				let everdayList = everdayListDate.data.dailySongs
 				this.everdayList = everdayList
-				appGlobalData.playIdList = everdayList.map(item => {
+				appGlobalData.musicIdList = everdayList.map(item => {
 					return item.id
 				})
-			},
-			playAllSongs(){
-				// console.log('xxx')
-				// let allSongs = this.everdayList;
-				// uni.$emit('allSongs',{
-				// 	msg:allSongs
-				// })
 			},
 			more(){
 				this.isShow = !this.isShow
@@ -110,7 +103,7 @@
 			},
 		},
 		components:{
-			// musicBottom
+			musicBottom
 		}
 	}
 </script>

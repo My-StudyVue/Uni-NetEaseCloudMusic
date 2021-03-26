@@ -109,18 +109,13 @@
 			}
 		},
 		mounted(e) {
-			let userInfoList = []
-			userInfoList.push(appGlobalData.userInfo1,appGlobalData.userInfo2,appGlobalData.userInfo3)
-			let userInfo = userInfoList.filter(item => {
-				if(item.length > 0){
-					return item
-				}
-			})
-			if(appGlobalData.userInfo1 || appGlobalData.userInfo2 || appGlobalData.userInfo3){
-				this.userInfo = JSON.parse(userInfo[0])
-				this.getLevel();
-				this.getSongList(JSON.parse(userInfo[0]).userId)
+			let userInfo = appGlobalData.userInfo1!== '' ? appGlobalData.userInfo1 : appGlobalData.userInfo2 !== '' ? appGlobalData.userInfo2 : appGlobalData.userInfo3
+			if(!userInfo){
+				return 
 			}
+			this.userInfo = JSON.parse(userInfo)
+			this.getLevel();
+			this.getSongList(JSON.parse(userInfo).userId)
 		},
 		methods: {
 			handleTouchStart(e){

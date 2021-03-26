@@ -63,7 +63,6 @@
 	import request from 'utils/request.js'
 	
 	let isSend = false;//函数节流使用
-	let handlehostList = [];
 	
 	export default {
 		data() {
@@ -77,19 +76,8 @@
 				showSync: false,
 			}
 		},
-		// watch:{
-		// 	historyList(data){
-		// 		handlehostList = Array.from(new Set(data))
-		// 	}
-		// },
 		mounted() {
 			this.getInitData()
-			this.historyList = handlehostList
-			console.log(handlehostList,this.historyList)
-			// this.getSearchHistory()
-			let A = ['a','b','c','b','a']
-			A = Array.from(new Set(A))
-			console.log(A)
 		},
 		methods: {
 			async getInitData(){
@@ -116,20 +104,17 @@
 					success: (res) => {
 						if(res.confirm){
 							this.historyList = []
-							// uni.removeStorageSync('serchHistoty')
 						}
 					}
 				})
 			},
 			handleInputChange(e){
 				this.searchContent = e.detail.value.trim()
-				console.log(e.detail.value.trim())
 				if(e.detail.value.trim()){
 					if(isSend){
 						return 
 					}
 					isSend = true
-					console.log(e.detail.value.trim())
 					this.getSearchList()
 					
 					//函数节流
@@ -146,15 +131,10 @@
 				let searchListData = await request('/cloudsearch',{keywords:searchContent, limit:10})
 				this.searchList = searchListData.result.songs
 				historyList.push(searchContent)
-				//添加到历史记录中
-				// if(historyList.indexOf(searchContent) !== -1){
-				// 	historyList.splice(historyList.indexOf(searchContent), 1)
-				// } 
-				// historyList.unshift(searchContent)
-				// uni.setStorageSync('serchHistoty', historyList)
 			},
 			toSearchDetail(songName){
 				this.historyList.push(songName)
+				this.historyList = Array.from(new Set(this.historyList))
 				uni.navigateTo({
 					url:'./searchDetail?keyWords=' + songName
 				})

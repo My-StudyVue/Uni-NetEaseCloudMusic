@@ -19,6 +19,7 @@
 			<chart :chart="chartList"></chart>
 			<broad :broad="broadList"></broad>
 		</view>
+		<musicBottom></musicBottom>
 	</view>
 </template>
 
@@ -29,6 +30,7 @@ import recommend from 'components/findComponents/recommend/recommend.vue'
 import chart from 'components/findComponents/chart/chart.vue'
 import broad from 'components/findComponents/broad/broad.vue'
 import my from '../my/my.vue'
+import musicBottom from 'pages/music/musicBottom/musicBottom'
 
 import request from 'utils/request.js'
 const appGlobalData = getApp().globalData;
@@ -85,7 +87,7 @@ const appGlobalData = getApp().globalData;
 				this.chartList = arr.map((chart,index) => {
 					chart['background'] = 'chart_swiper_view' + index
 					chart.tracks = [...new Set(chart.tracks)].slice(0,3)
-					appGlobalData.playIdList = chart.tracks.map(a => {
+					appGlobalData.musicIdList = chart.tracks.map(a => {
 						return a.id
 					})
 					return chart
@@ -141,7 +143,8 @@ const appGlobalData = getApp().globalData;
 			recommend,
 			chart,
 			broad,
-			my
+			my,
+			musicBottom
 		}
 	}
 </script>

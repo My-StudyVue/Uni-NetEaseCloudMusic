@@ -20,13 +20,19 @@
 		</view>
 		
 		<view style="display: flex;justify-content: center;">
-			<view class="music_progress">
+			<view class="control-process">
 				<text>{{currentTime}}</text>
-				<view class="music_bar">
-					<view class="music_timeBar" :style="{width: currentWidth + 'px'}">
-						<view class="music_circle"/>
-					</view>
-				</view>
+				<slider class="slider"
+					@change="sliderChange"
+					@touchstart="sliderMoveStart"
+					@touchend="sliderMoveEnd" 
+					min="0" 
+					block-size="16" 
+					max="100"
+					activeColor="rgb(240, 19, 19)" 
+					backgroundColor="rgba(255,255,255,.3)" 
+					:value="sliderValue"
+				/>
 				<text>{{durationTime}}</text>
 			</view>
 		</view>
@@ -39,7 +45,7 @@
 			<text class="iconfont icon-playList" @click="toPlayRecently"></text>
 		</view>
 		<view v-if="isShow" style="display: flex;align-items: center;justify-content: center;z-index: -999 ;">
-			<play-recently :playRecently="playRecentlyList"></play-recently>
+			<play-recently :playRecentlyId="playRecentlyIdList"></play-recently>
 		</view>
 	</view>
 </template>
@@ -53,11 +59,13 @@
 	const backgroundAudioManager = uni.getBackgroundAudioManager();
 	let _musicLink = '';
 	let _durationTimeNum = 0;
-	let playMode = {
+	let _playMode = {
 			sequence:0,
-			loop:1,
-			random:2
+			random:1,
+			loop:2,
 		};
+	let _isMovingSlider = false;
+	let _musicIdList = [];
 	export default {
 		data() {
 			return {
@@ -67,46 +75,23 @@
 				mode: 0,
 				currentTime: '00:00',
 				durationTime: '00:00',
-				currentWidth: 0,
 				isShow:false,
-				playRecentlyList: [],
+				playRecentlyIdList: [],
 				isRandom:false,
 				isloop:false,
-				// playRecentlySongId: '',
+				sliderValue:0,
 			}
 		},
 		onLoad(options) {
-			let musicId = options.musicId
-			console.log(musicId)
-			this.musicId = options.musicId;
+			let musicId = this.musicId = options.musicId
 			this.getMusicInfo(musicId);
 			//判断当前页面音乐是否在播放
-			if(app.globalData.isMusicPlay && app.globalData.musicId === musicId){
+			if(app.globalData.isMusicPlay && String(app.globalData.musicId) === this.musicId){
 				this.isPlay = true
 			}
-			//监听音乐的播放/暂停/停止/自动完成播放
-			backgroundAudioManager.onPlay(() =>{
-				app.globalData.isMusicPlay = this.isPlay = true
-				app.globalData.musicId = musicId;
-				backgroundAudioManager.seek(new Date(app.globalData.currentTimeNum).getMilliseconds())
-			});
-			backgroundAudioManager.onPause(() => {
-				app.globalData.isMusicPlay = this.isPlay = false
-			});
-			backgroundAudioManager.onEnded(() => {
-				uni.$emit('switchType',{
-					msg:type
-				})
-				this.currentWidth = 0;
-				this.currentTime = '00:00'
-			});
-			//监听音乐实时播放的时间
-			backgroundAudioManager.onTimeUpdate(() => {
-				let currentTimeNum = backgroundAudioManager.currentTime;
-				this.currentTime = String(this.handleTime(currentTimeNum * 1000));
-				this.currentWidth = (new Date(currentTimeNum).getMilliseconds()) / (new Date(_durationTimeNum).getMilliseconds()) * 430;
-			});
-			/////////////////////////////////////////////////////////////////////////////////
+			this.mode = app.globalData.playwaynum
+			console.log(app.globalData.musicIdList)
+			this.playRecentlyIdList =_musicIdList = app.globalData.musicIdList
 			//判断播放顺序
 			switch(this.mode) {
 				case 1:
@@ -127,28 +112,42 @@
 			async getMusicInfo(musicId){
 				let songData = await request('/song/detail',{ids:musicId});
 				this.song = songData.songs
+				// 悬浮播放器信息
+				let musicInfo = {
+					isPlay: app.globalData.isMusicPlay,
+					song : songData.songs[0],
+					musicId,
+				}
+				uni.$emit('musicBottom',{
+					msg:musicInfo
+				})
 				_durationTimeNum = songData.songs[0].dt;
 				this.durationTime = String(this.handleTime(_durationTimeNum));
 			},
 			musicPlay(){
 				this.isPlay = !this.isPlay;
+				app.globalData.isMusicPlay = this.isPlay
 				let {musicId,isPlay} = this.$data
-				console.log('0',musicId)
-				this.musicControl(musicId, isPlay, _musicLink);
+				this.musicControl(musicId, isPlay, _musicLink)
 			},
 			async musicControl(musicId, isPlay, musicLink){
 				if(isPlay){
-					if(!musicLink || _musicLink !== musicLink){
-						console.log('5',musicId)
+					app.globalData.isMusicPlay = true
+					if(!musicLink || app.globalData.musicId !== musicId){
 						//获取播放链接
 						let musicLinkData = await request('/song/url',{id:musicId});
-						_musicLink = musicLinkData.data[0].url;
-						console.log(_musicLink)
+						_musicLink = musicLinkData.data[0].url === musicLink ? musicLink: musicLinkData.data[0].url
 						if(!_musicLink){
 							uni.showToast({
 								title: '此曲不可播放,请点击下一曲',
 								icon: 'none',
 							});
+						}
+						if(this.isloop){
+							backgroundAudioManager.onEnded(() => {
+								backgroundAudioManager.src = _musicLink;
+								backgroundAudioManager.play()
+							})
 						}
 						backgroundAudioManager.startTime = backgroundAudioManager.currentTime;
 					}
@@ -159,69 +158,85 @@
 					app.globalData.currentTimeNum = backgroundAudioManager.currentTime;
 					backgroundAudioManager.pause();
 				}
+				
+				//监听音乐的播放/暂停/停止/自动完成播放
+				backgroundAudioManager.onPlay(() =>{
+					app.globalData.isMusicPlay = this.isPlay = true
+					app.globalData.musicId = musicId;
+					backgroundAudioManager.seek(new Date(app.globalData.currentTimeNum).getMilliseconds())
+				});
+				backgroundAudioManager.onPause(() => {
+					app.globalData.isMusicPlay = this.isPlay = false
+				});
+				backgroundAudioManager.onEnded(() => {
+					this.next(_musicIdList,this.isRandom)
+				});
+				//监听音乐实时播放的时间
+				backgroundAudioManager.onTimeUpdate(() => {
+					let currentTimeNum = backgroundAudioManager.currentTime;
+					this.sliderValue = currentTimeNum / _durationTimeNum * 1000 * 100
+					this.currentTime = String(this.handleTime(currentTimeNum * 1000));
+				});
 			},
 			handleSwitch(e){
 				let type = e.currentTarget.id;
 				backgroundAudioManager.stop();
-				let playIdList = app.globalData.playIdList
 				let isRandom = this.isRandom
 				switch(type) {
 					case "pre":
-						//上一曲
-						if(playIdList.length<2){
-							uni.showToast({
-								title: '此曲为单曲',
-								icon: 'none',
-							});					
-						}
-						else if(isRandom){
-							this.handleRandomEvent()
-						}
-						else{
-							let musicId = this.musicId;
-							let length = playIdList.length;
-							let index = playIdList.findIndex(v => v== musicId);
-							this.musicId = musicId = index === 0 ? playIdList[length - 1] : playIdList[index-1];
-							this.getMusicInfo(musicId)
-							this.musicControl(musicId,true);
-						}
+						this.pre(_musicIdList,isRandom)
 					break;
 					case "next":
-						if(playIdList.length<2){
-							uni.showToast({
-								title: '此曲为单曲',
-								icon: 'none',
-							});
-						}
-						else if(isRandom){
-						    this.handleRandomEvent()
-						}
-						else{
-							let musicId=this.musicId;
-							let length=playIdList.length;
-							let index = playIdList.findIndex(v => v==musicId);
-							this.musicId = musicId = index == length-1 ? playIdList[0] : playIdList[index+1];
-							this.getMusicInfo(musicId)
-							this.musicControl(musicId,true);
-						}
+						this.next(_musicIdList,isRandom)
 					break;
 				}
-				
-				// //订阅(接受)通信---musicId
-				// uni.$on('musicId',data => {
-				// 	this.getMusicInfo(data.msg);
-				// 	this.musicControl(data.msg,true);
-				// 	//取消订阅(接受)通信---消除累加
-				// 	uni.$off('musicId')
-				// })
-				// // 发布(传递)通信---type
-				// uni.$emit('switchType',{
-				// 	msg:type
-				// })
-				this.isPlay = true
+			},
+			//上一曲
+			pre(musicIdList,isRandom){
+				if(musicIdList.length<2){
+					uni.showToast({
+						title: '此曲为单曲',
+						icon: 'none',
+					});					
+				}
+				else if(isRandom){
+					this.handleRandomEvent()
+				}
+				else{
+					let musicId = this.musicId;
+					let length = musicIdList.length;
+					let index = musicIdList.findIndex(v => v== musicId);
+					this.musicId = musicId = index === 0 ? musicIdList[length - 1] : musicIdList[index-1];
+					this.getMusicInfo(musicId)
+					this.musicControl(musicId,true);
+				}
+				this.sliderValue = 0;
+				this.currentTime = '00:00'
+			},
+			//下一曲
+			next(musicIdList,isRandom){
+				if(musicIdList.length<2){
+					uni.showToast({
+						title: '此曲为单曲',
+						icon: 'none',
+					});
+				}
+				else if(isRandom){
+				    this.handleRandomEvent()
+				}
+				else{
+					let musicId=this.musicId;
+					let length=musicIdList.length;
+					let index = musicIdList.findIndex(v => v==musicId);
+					this.musicId = musicId = index == length-1 ? musicIdList[0] : musicIdList[index+1];
+					this.getMusicInfo(musicId)
+					this.musicControl(musicId,true);
+				}
+				this.sliderValue = 0;
+				this.currentTime = '00:00'
 			},
 			handleChange(){
-				let mode = this.mode = (this.mode + 1) % 3;
+				let mode = app.globalData.playwaynum = this.mode = (this.mode + 1) % 3;
 				switch(mode) {
 					case 1:
 						mode+=1;
@@ -238,7 +253,7 @@
 							title: '单曲循环',
 							icon: 'success',
 						});
-						this.isRandom=false,
+						this.isRandom=false;
 						this.isloop=true
 					break;
 					default:
@@ -247,34 +262,34 @@
 							title: '列表循环',
 							icon: 'success',
 						});
-						this.isRandom=false,
+						this.isRandom=false;
 						this.isloop=false
 					break;
 				}
-				app.globalData.playwaynum = mode
 			},
 			//随机播放事件
 			handleRandomEvent(){
 				let musicId = this.musicId;
-				let playIdList = app.globalData.playIdList
-				let length = playIdList.length;
+				let musicIdList = _musicIdList
+				let length = musicIdList.length;
+				let index
 				if(length < 2){
 					this.musicControl(musicId,true);
 					return;
 				}
 				if(length === 1){
-				  musicId = playIdList[0];
+				  musicId = musicIdList[0];
 				} else {
 					do{
 						let range = length - 0;
 						let rand = Math.random();
-						let index=(0 + Math.round(rand * range));
+						index = (0 + Math.round(rand * range));
 					}
-					while ((musicId===playIdList[index]) || (index>=playIdList.length)) 
-					musicId=playIdList[index]
+					while ((musicId === musicIdList[index]) || (index >= musicIdList.length)) 
+					app.globalData.musicId = musicId = musicIdList[index]
 				}
 				this.getMusicInfo(musicId)
-				this.musicControl(musicId,false);
+				this.musicControl(musicId,true);
 			},
 			handleTime(time){
 				let minute = Math.floor(time / 1000 / 60);
@@ -283,26 +298,28 @@
 				second = (String(second).length == 1) ? ('0' + second): second;
 				return minute +':'+second;
 			},
-			toMusicBottom(){
-				let musicInfo = {
-					song : this.song,
-					musicId: this.musicId,
-					musicLink: _musicLink,
-					currentTime: this.currentTime,
-					durationTime: this.durationTime,
+			sliderChange(e) {
+				if(!_isMovingSlider){
+					this.sliderValue = e.detail.value
+					let position = e.detail.value / 100 * _durationTimeNum
+					this.currentTime = String(this.handleTime(position))
+					backgroundAudioManager.seek(position / 1000)
 				}
-				uni.$emit('musicBottom',{
-					msg:musicInfo
-				})
+			},
+			sliderMoveStart(){
+				_isMovingSlider: true
+			},
+			sliderMoveEnd(){
+				_isMovingSlider: false
 			},
 			toPlayRecently(){
 				this.isShow = !this.isShow
 			},
 			pull(){
 				uni.navigateBack({
-				    delta: 1
+				    delta: 1,
 				});
-			}
+			},
 		},
 		computed:{
 			isPlayNeedle(){
@@ -315,7 +332,7 @@
 				return this.isPlay ? 'iconfont icon-play' : 'iconfont icon-pause'
 			},
 			chooseMode(){
-				return this.mode === playMode.sequence ? 'iconfont icon-sequence' : this.mode === playMode.loop ? 'iconfont icon-loop' : 'iconfont icon-random'
+				return this.mode === _playMode.sequence ? 'iconfont icon-sequence' : this.mode === _playMode.loop ? 'iconfont icon-loop' : 'iconfont icon-random'
 			},
 		},
 		components:{
@@ -430,38 +447,22 @@
 		border-radius: 50%;
 	}
 	
-	.music_progress{
-		color: #fff;
+	.control-process {
 		position: absolute;
 		bottom: 150rpx;
 		width: 700rpx;
 		height: 100rpx;
 		line-height: 100rpx;
-		display: flex;
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
 	}
-	.music_progress .music_bar{
+	.control-process .slider {
 		position: relative;
-		width: 450rpx;
-		height: 4rpx;
-		background: #d9d9d9;
-		margin: auto;
+	    width: 526rpx;
 	}
-	.music_progress .music_bar .music_timeBar{
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 1;
-		height: 4rpx;
-		background: rgb(240, 19, 19);
-	}
-	.music_progress .music_bar .music_timeBar .music_circle{
-		position: absolute;
-		right: -12rpx;
-		top:-6rpx;
-		width: 12rpx;
-		height: 12rpx;
-		border-radius: 50%;
-		background: #fff;
+	.control-process text {
+	    color: #fff;
 	}
 	
 	.music_control{

@@ -50,9 +50,8 @@
 				</label>
 			</checkbox-group>
 			<view style="width: 40rpx;color: #555555;">
-				<text>{{item.id}}---{{playListId}}</text>
-				<!-- <text v-if="item.id === playListId" class="iconfont icon-playing" style="color: rgb(240, 19, 19);"></text>
-				<text v-else >{{index+1}}</text> -->
+				<text v-if="item.id === musicId" class="iconfont icon-playing" style="color: rgb(240, 19, 19);position: relative;"></text>
+				<text v-else >{{index+1}}</text>
 			</view>
 			<view class="music">
 				<text style="font-weight: 700;">{{item.name}}</text>
@@ -62,19 +61,22 @@
 		</view>
 		<view class="collector">
 			<view v-for="item in playList.subscribers.slice(0,5)" :key="item.userId">
-				<image :src="item.avatarUrl" style="width: 70rpx;height: 70rpx;border-radius: 50%;margin-right: 20rpx;"></image>
+				<image :src="item.avatarUrl" style="width: 70rpx;height: 70rpx;border-radius: 50%;margin-right: 30rpx;"></image>
 			</view>
 			<text style="font-size: 30rpx;">{{_getNum(playList.subscribedCount)}}人收藏</text>
 		</view>
 	</scroll-view>
+	<musicBottom></musicBottom>
   </view>
 </template>
 
 <script>
 	import request from 'utils/request.js'
 	
-	const appGlobalData = getApp().globalData;
+	import musicBottom from 'pages/music/musicBottom/musicBottom'
 	
+	const appGlobalData = getApp().globalData;
+	let _playListSongId = []
 	export default {
 		data() {
 		  return {
@@ -101,19 +103,18 @@
 				creator: {},
 				trackIds: [],
 			},// 歌单数据
-			playListId: '',//歌单id
-			playListSongId: '',//歌单歌曲id
 			isShow:false,
 			isTrue:false,
 			index:0,
+			musicId: '',//歌曲id
 		  }
 		},
 		onLoad(options) {
-			let playListId = this.playListId = options.playListId;
+			let playListId = options.playListId;
 			this.getPlayListInfo(playListId);
 			// 判断用户是否登录
-			const userInfo = appGlobalData.userInfo1 || appGlobalData.userInfo2 || appGlobalData.userInfo3
-			if(!userInfo){
+			const userInfo = (appGlobalData.userInfo1 === '') && (appGlobalData.userInfo2 === '') && (appGlobalData.userInfo3 === '')
+			if(userInfo){
 				uni.showToast({
 					title:'请先登录',
 					icon:'none',
@@ -124,6 +125,9 @@
 					}
 				})
 			}
+			uni.$on('musicBottom',(data) => {
+				this.musicId = data.msg.musicId
+			})
 		},
 		onUnload() {
 			uni.$off('test');
@@ -153,15 +157,15 @@
 			},
 			async getPlayListMusic(playListSongId){
 				playListSongId.forEach(item => {
-					this.playListSongId += item.id + ","
+					_playListSongId += item.id + ","
 				})
 				//去掉最后一个逗号
-				if (this.playListSongId.length > 0) {
-					this.playListSongId = this.playListSongId.substr(0, this.playListSongId.length - 1);
+				if (_playListSongId.length > 0) {
+					_playListSongId = _playListSongId.substr(0, _playListSongId.length - 1);
 				}
-				let songItem = await request('/song/detail',{ids:this.playListSongId});
+				let songItem = await request('/song/detail',{ids:_playListSongId});
 				this.playList.tracks = songItem.songs
-				appGlobalData.playIdList = songItem.songs.map(item => {
+				appGlobalData.musicIdList = songItem.songs.map(item => {
 					return item.id
 				})
 			},
@@ -195,6 +199,9 @@
 				}
 			}
 		},
+		components: {
+			musicBottom
+		}
 	}
 </script>
 

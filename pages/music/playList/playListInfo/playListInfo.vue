@@ -30,8 +30,8 @@
 					border-radius: 100rpx;
 					color: #FFF;
 					border: 1rpx solid rgb(191, 191, 191);
-					background: rgb(0, 0, 0);
-					">保存封面</button>
+					background: rgb(0, 0, 0);"
+					@click="saveImage">保存封面</button>
 		</view>
 	</view>
 </template>
@@ -59,6 +59,27 @@
 					delta:1
 				})
 			},
+			saveImage(){
+				uni.downloadFile({
+					url:this.playListInfo.coverImgUrl,
+					success: (res) => {
+						uni.saveImageToPhotosAlbum({
+							filePath: res.tempFilePath,
+							success: () => {
+								uni.showToast({
+									title:'保存成功',
+								})
+							},
+							fail: () => {
+								uni.showToast({
+									title:'保存失败',
+									icon: 'none'
+								})
+							}
+						});
+					}
+				})
+			},
 			_handleDescription(description){
 				if(description === null){
 					return description = '介绍：无'
@@ -82,6 +103,7 @@
 	
 	.header{
 		height: 80rpx;
+		font-weight: 800;
 	}
 	.header .iconfont{
 		font-size: 50rpx;

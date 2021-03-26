@@ -11,7 +11,7 @@
 					<view v-for="(title,index) in item.tracks" :key="title.id" class="chart_swiperItem_card" @click="toMusic(title.id)">
 						<image :src="title.al.picUrl" style="height: 40px;width: 45px;border-radius: 5px;"/>
 						<view>
-							<view style="font-size: 15px; font-weight: 600;width: 180px;padding-left: 5px;">{{index + 1}} {{title.al.name}}</view>
+							<view style="font-size: 15px; font-weight: 600;width: 180px;padding-left: 5px;">{{index + 1}} {{title.name}}</view>
 							<text style="font-size: 10px;">-{{title.ar[0].name}}</text>
 						</view>
 					</view>

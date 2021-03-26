@@ -11,7 +11,7 @@
         "modules" : {
             "OAuth" : {}
         },
-        "usingComponents":true,
+        "usingComponents" : true,
         "distribute" : {
             "android" : {
                 "permissions" : [
@@ -62,7 +62,7 @@
     },
     "quickapp" : {},
     "mp-weixin" : {
-        "appid" : "wxdcf77d83e98016f2",
+        "appid" : "",
         "setting" : {
             "urlCheck" : true
         },

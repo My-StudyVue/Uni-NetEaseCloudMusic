@@ -1,128 +1,119 @@
 <template>
-	<view class="musicBottom">
-		<image :src="src" style="width: 100rpx;height: 100rpx;border-radius: 50%;"></image>
-		<view class="music">
-			<text style="font-weight: 700;"
-				  :class="title.length < 14 ? 'music_titleAnimate' : 'music_titleAnimateLoop'">{{title}}</text>
-			<text class="author">{{author}}</text>
-		</view>
-		<view style="display: flex;justify-content: center;align-items: center;">
-			<view :class="isPlayMusic" @click="musicPlay"></view>
-			<canvas class="music_progress" canvas-id="bar"></canvas>
-			<canvas class="music_progress" canvas-id="timeBar"></canvas>
-		</view>
-		<text class="iconfont icon-playList"></text>
+	<view class="musicBottom" v-if="musicInfo.song"
+		  :style="{'top': top + 'px',
+				  'right': right + 'px'}"
+		  @touchstart="musicBottomStart" 
+		  @touchmove.stop.prevent="musicBottomMove">
+		<image :src="musicInfo.song.al.picUrl" style="width: 100rpx;height: 100rpx;border-radius: 50%;z-index: 9999;" @click="toMusic" :class="isPlayMusic"></image>
 	</view>
 </template>
 
 <script>
+	const app = getApp();
+	let _musicId = '';
+	let _startPoint;
+	let _windowHeight = 0;
+	let _windowWidth = 0;
 	export default {
 		data() {
 			return {
-				src: 'http://p2.music.126.net/r6oGHnznNVB4sSVjRxdz2g==/109951165463882412.jpg?param=130y130',
-				title: 'hhh',
-				author: 'xxx',
-				isPlay: false,
+				isPlay:false,
+				musicInfo:{},
+				top:0,
+				right:0,
+			}
+		},
+		watch:{
+			isPlay(value){
+				this.playRecentlyId = value
+			},
+			musicInfo(value){
+				this.playRecentlyId = value
 			}
 		},
 		mounted() {
-			this.drawProgressbar();
 			uni.$on('musicBottom',(data) => {
-				console.log(data.msg);
+				this.musicInfo = data.msg
+				this.isPlay = data.msg.isPlay
+				_musicId = data.msg.musicId
 			})
+			uni.getSystemInfo({
+				success: (res) => {
+						_windowHeight = res.windowHeight
+						_windowWidth = res.windowWidth
+						this.top = res.windowHeight * 0.50//这里定义按钮的初始位置
+						this.right = res.windowWidth * 0.01//这里定义按钮的初始位置
+					}
+				})
 		},
 		methods: {
-			musicPlay(){
-				this.isPlay = !this.isPlay;
+			toMusic(){
+				uni.navigateTo({
+					url:'/pages/music/music?musicId=' + _musicId
+				})
 			},
-			 // 绘制路径线
-            drawProgressbar() {
-				const ctx = uni.createCanvasContext('bar', this);
-				ctx.setLineWidth(4);
-				ctx.setStrokeStyle('#BFBFBF');
-				ctx.beginPath();
-				ctx.arc(26, 28, 16, 0, 2 * Math.PI);
-                ctx.stroke(); 
-                ctx.draw();
-				this.drawProgressTimeBar(0.5);
-            },
-			// 动态绘制圆环
-            drawProgressTimeBar(step) {
-                var ctx = uni.createCanvasContext('timeBar', this);
-                ctx.setLineWidth(4);
-                ctx.setStrokeStyle('rgb(240, 19, 19)');
-                ctx.setLineCap('round');
-                ctx.beginPath();
-                ctx.arc(26, 28, 16, 1.5 * Math.PI, (step + 1.5) * Math.PI);
-                ctx.stroke();
-                ctx.draw();
-            },
+			//拖动事件
+			musicBottomStart(e){
+				_startPoint = e.touches[0]
+			},
+			musicBottomMove(e){
+				let endPoint = e.touches[e.touches.length - 1]//获取拖动结束点
+				//计算在X轴上拖动的距离和在Y轴上拖动的距离
+				const translateX = endPoint.clientX - _startPoint.clientX
+				const translateY = endPoint.clientY - _startPoint.clientY
+				_startPoint = endPoint//重置开始位置
+				let _top = this.top + translateY
+				let _right = this.right + translateX
+				//判断是移动否超出屏幕
+				if (50 -_right <= _windowWidth){
+				  _right = _windowWidth + 50;
+				}
+				if (_right>=0){
+				  _right=0;
+				}
+				if (_top<=0){
+				  _top=33
+				}
+				if (_top + 50 >= _windowHeight-33){
+				  _top = _windowHeight-83;
+				}
+				this.top = _top
+				this.right = _right
+			},
 		},
 		computed: {
 			isPlayMusic(){
-				return this.isPlay ? 'iconfont icon-play' : 'iconfont icon-pause'
+				return this.isPlay && 'music_discContainerAnimation'
 			}
-		}
+		},
 	}
 </script>
 
 <style>
 	.musicBottom{
-		background: #fff;
+		position: absolute;
+		background-image: linear-gradient(to bottom,#330867,#30cfd0);
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		padding: 10rpx;
+		width: 120rpx;
+		height: 120rpx;
+		border-radius: 50%;
+		z-index: 888;
+		box-shadow: 1px 0px 1px 1px #ede7e7;
 	}
 	
-	.music{
-		width: 450rpx;
-		display: flex;
-		flex-direction: column;
-		padding-left: 10rpx;
+	/* 动画 */
+	.music_discContainerAnimation{
+		animation: musicDisc 10s linear infinite;
+		/* infinite无限循环 */
+		animation-delay: 1s;
 	}
-	.music text{
-		height: 50rpx;
-		line-height: 50rpx;
-		max-width: 450rpx;
-		white-space: normal;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-	
-	.music_titleAnimate{
-		font-size: 40rpx;
-		overflow: hidden;
-		white-space: nowrap;
-		font-weight: 600;
-	} 
-	.music_titleAnimateLoop{
-		width: 300rpx;
-		font-weight: 600;
-		display: inline-block;
-		overflow: hidden;
-		white-space: nowrap;
-		animation: 10s titleSongLoop linear infinite;
-	}
-	@keyframes titleSongLoop {
-		from {
-			transform: translateX(290rpx);
+	@keyframes musicDisc{
+		to{
+			transform: rotate(360deg);
 		}
-		to {
-			transform: translateX(-1rpx);
-		}
-	}
-	.music_progress{
-		position: absolute;
-        top: 0;
-        right: 70rpx;
-        width: 50px;
-        height: 50px;
-	}
-	.iconfont{
-		z-index: 1;
-		font-size: 65rpx;
-		margin: 0 5rpx 0 5rpx;
 	}
 </style>
 

@@ -68,7 +68,7 @@
 				let balladListDate = await request('/cloudsearch',{keywords, limit:100})
 				let balladList = balladListDate.result.songs
 				this.balladList = balladList
-				appGlobalData.playIdList = balladList.map(item => {
+				appGlobalData.musicIdList = balladList.map(item => {
 					return item.id
 				})
 			}

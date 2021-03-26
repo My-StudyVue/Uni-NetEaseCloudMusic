@@ -66,6 +66,7 @@
 	.broad_title .active{
 		color:#000;
 		font-weight: 700;
+		font-size: 40rpx;
 	}
 	
 	.broad_container{

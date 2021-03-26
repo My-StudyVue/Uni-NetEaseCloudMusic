@@ -14,6 +14,7 @@
 		<view class="content" v-show="tab === 2">
 			<musicList :musicList="keyWords"></musicList>
 		</view>
+		<musicBottom></musicBottom>
 	</view>
 </template>
 
@@ -21,6 +22,7 @@
 	import all from './serchDetailInfo/all.vue'
 	import ballad from './serchDetailInfo/ballad.vue'
 	import musicList from './serchDetailInfo/musicList.vue'
+	import musicBottom from 'pages/music/musicBottom/musicBottom'
 	
 	export default {
 		data(){
@@ -55,7 +57,8 @@
 		components:{
 			all,
 			ballad,
-			musicList
+			musicList,
+			musicBottom
 		}
 	}
 </script>

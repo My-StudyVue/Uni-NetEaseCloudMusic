@@ -46,7 +46,7 @@
 	.title{
 		position: relative;
 		top: -68rpx;
-		left: 608rpx;
+		left: 640rpx;
 		background: #aa5500;
 		width: 50rpx;
 		font-size: 20rpx;
@@ -60,7 +60,7 @@
 	.titleLong {
 		position: relative;
 		top: -68rpx;
-		left: 565rpx;
+		left: 590rpx;
 		width: 100rpx;
 		font-size: 20rpx;
 		text-align: center;

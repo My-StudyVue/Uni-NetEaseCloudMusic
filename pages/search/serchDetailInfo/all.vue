@@ -66,12 +66,11 @@
 		methods: {
 			async getSearchResult(keywords){
 				let songListDate = await request('/cloudsearch',{keywords, limit:5})
-				let songList = songListDate.result.songs
-				this.songList = songList
-				appGlobalData.playIdList = songList.map(item => {
+				this.songList = songListDate.result.songs
+				this.songCount = songListDate.result.songCount
+				appGlobalData.musicIdList = songListDate.result.songs.map(item => {
 					return item.id
 				})
-				this.songCount = songListDate.result.songCount
 				//
 				let playListDate = await request('/cloudsearch',{keywords, limit:5, type:1000})
 				this.playList = playListDate.result.playlists
